@@ -1528,24 +1528,24 @@ def generate_html_report(csv_path, html_path):
             
             /* Mejoras de texto responsivo para móvil */
             body {{
-                font-size: 16px;
+                font-size: 18px;
             }}
             .card-title {{
-                font-size: 1.35rem;
+                font-size: 1.5rem;
             }}
             .card-description {{
-                font-size: 1.05rem;
+                font-size: 1.15rem;
             }}
             .card-meta {{
-                font-size: 0.95rem;
+                font-size: 1.05rem;
             }}
             .badge {{
-                font-size: 0.8rem;
+                font-size: 0.85rem;
                 padding: 0.35rem 0.6rem;
             }}
             .btn-link {{
-                font-size: 1.05rem;
-                padding: 0.8rem 1.4rem;
+                font-size: 1.15rem;
+                padding: 0.9rem 1.5rem;
                 width: 100%;
                 text-align: center;
             }}
@@ -1556,15 +1556,15 @@ def generate_html_report(csv_path, html_path):
             .controls-panel select, 
             .controls-panel button,
             .controls-panel span {{
-                font-size: 1.05rem !important;
+                font-size: 1.15rem !important;
             }}
             
             .controls-header span {{
-                font-size: 1.25rem !important;
+                font-size: 1.35rem !important;
             }}
             
             .filter-btn {{
-                padding: 0.8rem 1.2rem !important;
+                padding: 0.9rem 1.3rem !important;
             }}
         }}
         .modal-info {{
