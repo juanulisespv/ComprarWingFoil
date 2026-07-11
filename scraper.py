@@ -1525,6 +1525,47 @@ def generate_html_report(csv_path, html_path):
             .prev-btn {{ left: 10px; }}
             .next-btn {{ right: 10px; }}
             .modal-img {{ max-height: 60vh; }}
+            
+            /* Mejoras de texto responsivo para móvil */
+            body {{
+                font-size: 16px;
+            }}
+            .card-title {{
+                font-size: 1.35rem;
+            }}
+            .card-description {{
+                font-size: 1.05rem;
+            }}
+            .card-meta {{
+                font-size: 0.95rem;
+            }}
+            .badge {{
+                font-size: 0.8rem;
+                padding: 0.35rem 0.6rem;
+            }}
+            .btn-link {{
+                font-size: 1.05rem;
+                padding: 0.8rem 1.4rem;
+                width: 100%;
+                text-align: center;
+            }}
+            
+            /* Textos más grandes en el panel de filtros en móvil */
+            .controls-panel label, 
+            .controls-panel input, 
+            .controls-panel select, 
+            .controls-panel button,
+            .controls-panel span {{
+                font-size: 1.05rem !important;
+            }}
+            
+            .controls-header span {{
+                font-size: 1.25rem !important;
+            }}
+            
+            .filter-btn {{
+                padding: 0.8rem 1.2rem !important;
+            }}
         }}
         .modal-info {{
             margin-top: 1rem;
@@ -1606,38 +1647,53 @@ def generate_html_report(csv_path, html_path):
         </header>
 
         <div class="stats" style="margin-bottom: 2rem;">
-            <div class="stat-card">
-                <h3>Total Anuncios</h3>
-                <p id="stat-total">0</p>
-            </div>
-            <div class="stat-card">
-                <h3>Disponibles</h3>
-                <p id="stat-available">0</p>
-            </div>
-            <div class="stat-card">
-                <h3>Admiten Envío</h3>
-                <p id="stat-shippable">0</p>
+            <div class="stat-card" style="min-width: 260px; flex: 1.2;">
+                <h3>Resumen de Anuncios</h3>
+                <div style="display: flex; justify-content: space-around; align-items: center; margin-top: 0.5rem; gap: 0.5rem;">
+                    <div style="text-align: center; flex: 1;">
+                        <span style="font-size: 0.75rem; color: var(--text-muted); text-transform: uppercase;">Total</span>
+                        <p id="stat-total" style="font-size: 1.5rem; color: #ffffff; font-weight: 700; margin-top: 0.1rem;">0</p>
+                    </div>
+                    <div style="text-align: center; border-left: 1px solid var(--border-color); border-right: 1px solid var(--border-color); flex: 1.2; padding: 0 0.5rem;">
+                        <span style="font-size: 0.75rem; color: var(--text-muted); text-transform: uppercase;">Disponibles</span>
+                        <p id="stat-available" style="font-size: 1.5rem; color: #34d399; font-weight: 700; margin-top: 0.1rem;">0</p>
+                    </div>
+                    <div style="text-align: center; flex: 1;">
+                        <span style="font-size: 0.75rem; color: var(--text-muted); text-transform: uppercase;">Con Envío</span>
+                        <p id="stat-shippable" style="font-size: 1.5rem; color: #a78bfa; font-weight: 700; margin-top: 0.1rem;">0</p>
+                    </div>
+                </div>
             </div>
             <div class="stat-card" style="min-width: 260px; flex: 1.5; border-color: rgba(16, 185, 129, 0.15);">
                 <h3>Precios (Mín / Prom / Máx)</h3>
                 <div style="display: flex; justify-content: space-around; align-items: center; margin-top: 0.5rem; gap: 0.5rem;">
                     <div style="text-align: center; flex: 1;">
-                        <span style="font-size: 0.7rem; color: var(--text-muted); text-transform: uppercase;">Mín</span>
-                        <p id="price-min" style="font-size: 1.4rem; color: var(--primary); font-weight: 700; margin-top: 0.1rem;">0€</p>
+                        <span style="font-size: 0.75rem; color: var(--text-muted); text-transform: uppercase;">Mín</span>
+                        <p id="price-min" style="font-size: 1.5rem; color: var(--primary); font-weight: 700; margin-top: 0.1rem;">0€</p>
                     </div>
                     <div style="text-align: center; border-left: 1px solid var(--border-color); border-right: 1px solid var(--border-color); flex: 1.2; padding: 0 0.5rem;">
-                        <span style="font-size: 0.7rem; color: var(--text-muted); text-transform: uppercase;">Prom</span>
-                        <p id="price-avg" style="font-size: 1.4rem; color: #60a5fa; font-weight: 700; margin-top: 0.1rem;">0€</p>
+                        <span style="font-size: 0.75rem; color: var(--text-muted); text-transform: uppercase;">Prom</span>
+                        <p id="price-avg" style="font-size: 1.5rem; color: #60a5fa; font-weight: 700; margin-top: 0.1rem;">0€</p>
                     </div>
                     <div style="text-align: center; flex: 1;">
-                        <span style="font-size: 0.7rem; color: var(--text-muted); text-transform: uppercase;">Máx</span>
-                        <p id="price-max" style="font-size: 1.4rem; color: var(--danger); font-weight: 700; margin-top: 0.1rem;">0€</p>
+                        <span style="font-size: 0.75rem; color: var(--text-muted); text-transform: uppercase;">Máx</span>
+                        <p id="price-max" style="font-size: 1.5rem; color: var(--danger); font-weight: 700; margin-top: 0.1rem;">0€</p>
                     </div>
                 </div>
             </div>
         </div>
 
-        <div class="controls">
+        <div class="controls-panel" style="background-color: var(--card-bg); border: 1px solid var(--border-color); border-radius: 12px; padding: 1.2rem; margin-bottom: 2rem;">
+            <div class="controls-header" style="display: flex; justify-content: space-between; align-items: center; cursor: pointer; user-select: none;" onclick="toggleFilters()">
+                <span style="font-weight: 700; font-size: 1.15rem; display: flex; align-items: center; gap: 0.5rem; color: #ffffff;">
+                    🔍 Panel de Filtros y Búsqueda
+                </span>
+                <button id="toggle-filters-btn" style="background: transparent; border: 1px solid var(--border-color); border-radius: 6px; color: var(--text-muted); padding: 0.4rem 0.8rem; font-size: 0.9rem; cursor: pointer; font-weight: 600; transition: all 0.2s;">
+                    Ocultar Filtros
+                </button>
+            </div>
+            
+            <div id="filters-container" style="margin-top: 1.2rem; transition: max-height 0.3s ease-out, opacity 0.3s ease-out; overflow: hidden; max-height: 1200px; opacity: 1;">
             <!-- Fila 1: Búsqueda y Limpieza -->
             <div style="display: flex; gap: 1rem; width: 100%; flex-wrap: wrap; margin-bottom: 1rem;">
                 <div class="search-box">
@@ -1709,6 +1765,7 @@ def generate_html_report(csv_path, html_path):
                 </div>
             </div>
         </div>
+    </div>
 
         <div id="filter-status" style="font-size: 0.95rem; color: var(--text-muted); margin-top: 1.5rem; margin-bottom: 1rem; font-weight: 600; display: flex; justify-content: space-between; align-items: center;">
             <span id="results-count">Mostrando 0 de 0 anuncios</span>
@@ -1783,6 +1840,20 @@ def generate_html_report(csv_path, html_path):
             document.getElementById('price-max-filter').value = '';
             searchQuery = '';
             renderListings();
+        }};
+
+        window.toggleFilters = function() {{
+            const container = document.getElementById('filters-container');
+            const btn = document.getElementById('toggle-filters-btn');
+            if (container.style.maxHeight === '0px') {{
+                container.style.maxHeight = '1200px';
+                container.style.opacity = '1';
+                btn.innerText = 'Ocultar Filtros';
+            }} else {{
+                container.style.maxHeight = '0px';
+                container.style.opacity = '0';
+                btn.innerText = 'Mostrar Filtros';
+            }}
         }};
         
         // Helper para extraer los números de los campos stringificados como "[74.5]" o "[]"
@@ -2218,6 +2289,15 @@ def generate_html_report(csv_path, html_path):
 
         // Render inicial
         renderListings();
+
+        // Colapsar filtros por defecto en móviles al cargar
+        if (window.innerWidth < 768) {{
+            const container = document.getElementById('filters-container');
+            const btn = document.getElementById('toggle-filters-btn');
+            container.style.maxHeight = '0px';
+            container.style.opacity = '0';
+            btn.innerText = 'Mostrar Filtros';
+        }}
     </script>
 
     <!-- Modal para visualización de fotos -->
