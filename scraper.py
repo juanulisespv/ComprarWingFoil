@@ -914,7 +914,7 @@ def main():
                     
                     # Actualizar reporte HTML interactivo
                     try:
-                        html_output = args.output.rsplit('.', 1)[0] + ".html"
+                        html_output = os.path.join(os.path.dirname(args.output) or ".", "index.html")
                         generate_html_report(args.output, html_output)
                     except Exception as e:
                         logger.debug(f"No se pudo actualizar el reporte HTML tras purgar inactivos: {e}")
@@ -935,7 +935,7 @@ def main():
             logger.info("No hay anuncios nuevos o a actualizar para procesar. Finalizando.")
             # Generar reporte HTML final por si hubo eliminación de inactivos
             try:
-                html_output = args.output.rsplit('.', 1)[0] + ".html"
+                html_output = os.path.join(os.path.dirname(args.output) or ".", "index.html")
                 generate_html_report(args.output, html_output)
             except Exception:
                 pass
@@ -1008,7 +1008,7 @@ def main():
                 
                 # Actualizar reporte HTML interactivo
                 try:
-                    html_output = args.output.rsplit('.', 1)[0] + ".html"
+                    html_output = os.path.join(os.path.dirname(args.output) or ".", "index.html")
                     generate_html_report(args.output, html_output)
                 except Exception as e:
                     logger.debug(f"No se pudo actualizar el reporte HTML: {e}")
@@ -1030,7 +1030,7 @@ def main():
             
         # Generación final de reporte HTML por seguridad
         try:
-            html_output = args.output.rsplit('.', 1)[0] + ".html"
+            html_output = os.path.join(os.path.dirname(args.output) or ".", "index.html")
             generate_html_report(args.output, html_output)
             logger.info(f"Reporte HTML interactivo generado en: {html_output}")
         except Exception:
