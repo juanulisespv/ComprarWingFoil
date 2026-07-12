@@ -1,0 +1,1246 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Wallapop Wingfoil Dashboard</title>
+    <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;600;700&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --bg-color: #0b0f19;
+            --card-bg: #151b2d;
+            --text-color: #f3f4f6;
+            --text-muted: #9ca3af;
+            --primary: #10b981;
+            --primary-glow: rgba(16, 185, 129, 0.15);
+            --accent: #d97706;
+            --danger: #ef4444;
+            --gold: #fbbf24;
+            --gold-glow: rgba(251, 191, 36, 0.25);
+            --border-color: #1f2937;
+        }
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+        }
+        body {
+            background-color: var(--bg-color);
+            color: var(--text-color);
+            font-family: 'Outfit', sans-serif;
+            padding: 2rem;
+            line-height: 1.5;
+        }
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+        }
+        header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 2rem;
+            border-bottom: 1px solid var(--border-color);
+            padding-bottom: 1.5rem;
+            flex-wrap: wrap;
+            gap: 1rem;
+        }
+        h1 {
+            font-size: 2.2rem;
+            font-weight: 700;
+            background: linear-gradient(135deg, #60a5fa, #10b981);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+        .stats {
+            display: flex;
+            gap: 1.5rem;
+            margin-bottom: 2rem;
+            flex-wrap: wrap;
+            width: 100%;
+        }
+        .stat-card {
+            background-color: var(--card-bg);
+            border: 1px solid var(--border-color);
+            border-radius: 12px;
+            padding: 1.2rem;
+            flex: 1;
+            min-width: 200px;
+            text-align: center;
+            box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1);
+        }
+        .stat-card h3 {
+            font-size: 0.85rem;
+            color: var(--text-muted);
+            text-transform: uppercase;
+            letter-spacing: 0.05em;
+            margin-bottom: 0.5rem;
+        }
+        .stat-card p {
+            font-size: 2rem;
+            font-weight: 700;
+            color: #ffffff;
+        }
+        .stat-card.highlight p {
+            color: var(--gold);
+            text-shadow: 0 0 10px rgba(251, 191, 36, 0.2);
+        }
+        .controls {
+            background-color: var(--card-bg);
+            border: 1px solid var(--border-color);
+            border-radius: 12px;
+            padding: 1.5rem;
+            margin-bottom: 2rem;
+            display: flex;
+            gap: 1rem;
+            flex-wrap: wrap;
+            align-items: center;
+        }
+        .search-box {
+            flex: 1;
+            min-width: 280px;
+        }
+        .search-box input {
+            width: 100%;
+            padding: 0.8rem 1.2rem;
+            background-color: var(--bg-color);
+            border: 1px solid var(--border-color);
+            border-radius: 8px;
+            color: var(--text-color);
+            font-size: 1rem;
+            font-family: inherit;
+            outline: none;
+            transition: border-color 0.2s;
+        }
+        .search-box input:focus {
+            border-color: var(--primary);
+        }
+        .filter-group {
+            display: flex;
+            gap: 0.5rem;
+            flex-wrap: wrap;
+        }
+        .filter-btn {
+            background-color: var(--bg-color);
+            border: 1px solid var(--border-color);
+            color: var(--text-color);
+            padding: 0.6rem 1.2rem;
+            border-radius: 8px;
+            cursor: pointer;
+            font-size: 0.9rem;
+            font-family: inherit;
+            transition: all 0.2s;
+        }
+        .filter-btn:hover {
+            border-color: var(--primary);
+        }
+        .filter-btn.active {
+            background-color: var(--primary);
+            border-color: var(--primary);
+            color: #0b0f19;
+            font-weight: 600;
+        }
+        .sort-select {
+            padding: 0.75rem 1.2rem;
+            background-color: var(--bg-color);
+            border: 1px solid var(--border-color);
+            border-radius: 8px;
+            color: var(--text-color);
+            font-size: 0.9rem;
+            font-family: inherit;
+            outline: none;
+            cursor: pointer;
+        }
+        .grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(350px, 1fr));
+            gap: 1.5rem;
+        }
+        .card {
+            background-color: var(--card-bg);
+            border: 1px solid var(--border-color);
+            border-radius: 12px;
+            display: flex;
+            flex-direction: column;
+            justify-content: space-between;
+            box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1);
+            transition: transform 0.2s, border-color 0.2s;
+            position: relative;
+            overflow: hidden;
+        }
+        .card:hover {
+            transform: translateY(-4px);
+            border-color: #3b82f6;
+        }
+        .card.match {
+            border: 2px solid var(--gold);
+            box-shadow: 0 0 15px var(--gold-glow);
+        }
+        .card-body {
+            padding: 1.2rem;
+            display: flex;
+            flex-direction: column;
+            flex-grow: 1;
+            justify-content: space-between;
+        }
+        .card-image {
+            width: 100%;
+            height: 200px;
+            object-fit: cover;
+            border-bottom: 1px solid var(--border-color);
+            display: block;
+            background-color: #0b0f19;
+        }
+        .card-image-placeholder {
+            width: 100%;
+            height: 200px;
+            background: linear-gradient(135deg, #111827, #1f2937);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: var(--text-muted);
+            font-size: 0.85rem;
+            border-bottom: 1px solid var(--border-color);
+        }
+        .card-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: flex-start;
+            margin-bottom: 0.75rem;
+            gap: 0.5rem;
+        }
+        .card-title {
+            font-size: 1.25rem;
+            font-weight: 600;
+            color: #ffffff;
+            display: -webkit-box;
+            -webkit-line-clamp: 2;
+            -webkit-box-orient: vertical;
+            overflow: hidden;
+            line-height: 1.3;
+        }
+        .card-price {
+            font-size: 1.3rem;
+            font-weight: 700;
+            color: var(--primary);
+            background-color: var(--primary-glow);
+            padding: 0.2rem 0.6rem;
+            border-radius: 6px;
+            white-space: nowrap;
+        }
+        .card-meta {
+            font-size: 0.85rem;
+            color: var(--text-muted);
+            margin-bottom: 1rem;
+            display: flex;
+            justify-content: space-between;
+        }
+        .card-badges {
+            display: flex;
+            gap: 0.5rem;
+            flex-wrap: wrap;
+            margin-bottom: 1rem;
+        }
+        .badge {
+            font-size: 0.72rem;
+            font-weight: 600;
+            padding: 0.25rem 0.5rem;
+            border-radius: 4px;
+            text-transform: uppercase;
+        }
+        .badge-status {
+            background-color: rgba(16, 185, 129, 0.1);
+            color: var(--primary);
+            border: 1px solid rgba(16, 185, 129, 0.2);
+        }
+        .badge-status.reservado {
+            background-color: rgba(217, 119, 6, 0.1);
+            color: var(--accent);
+            border: 1px solid rgba(217, 119, 6, 0.2);
+        }
+        .badge-status.vendido {
+            background-color: rgba(239, 68, 68, 0.1);
+            color: var(--danger);
+            border: 1px solid rgba(239, 68, 68, 0.2);
+        }
+        .badge-shipping {
+            background-color: rgba(139, 92, 246, 0.1);
+            color: #a78bfa;
+            border: 1px solid rgba(139, 92, 246, 0.2);
+        }
+        .badge-shipping.no {
+            background-color: rgba(156, 163, 175, 0.1);
+            color: var(--text-muted);
+            border: 1px solid rgba(156, 163, 175, 0.2);
+        }
+        .badge-info {
+            background-color: rgba(59, 130, 246, 0.1);
+            color: #60a5fa;
+            border: 1px solid rgba(59, 130, 246, 0.2);
+        }
+        .badge-criteria {
+            background-color: var(--gold-glow);
+            color: var(--gold);
+            border: 1px solid var(--gold);
+            animation: pulse 2s infinite;
+        }
+        @keyframes pulse {
+            0% { box-shadow: 0 0 0 0 rgba(251, 191, 36, 0.4); }
+            70% { box-shadow: 0 0 0 6px rgba(251, 191, 36, 0); }
+            100% { box-shadow: 0 0 0 0 rgba(251, 191, 36, 0); }
+        }
+        .card-description {
+            font-size: 0.9rem;
+            color: var(--text-muted);
+            margin-bottom: 1.5rem;
+            display: -webkit-box;
+            -webkit-line-clamp: 3;
+            -webkit-box-orient: vertical;
+            overflow: hidden;
+            cursor: pointer;
+            transition: color 0.2s;
+            white-space: pre-line;
+        }
+        .card-description:hover {
+            color: var(--text-color);
+        }
+        .card-description.expanded {
+            display: block;
+            overflow: visible;
+            -webkit-line-clamp: unset;
+        }
+        .card-footer {
+            margin-top: auto;
+            border-top: 1px solid var(--border-color);
+            padding-top: 1rem;
+            display: flex;
+            justify-content: flex-end;
+        }
+        .btn-link {
+            display: inline-block;
+            background: linear-gradient(135deg, #3b82f6, #10b981);
+            color: #0b0f19;
+            text-decoration: none;
+            padding: 0.6rem 1.2rem;
+            border-radius: 6px;
+            font-size: 0.9rem;
+            font-weight: 600;
+            transition: opacity 0.2s, transform 0.1s;
+            text-align: center;
+        }
+        .btn-link:hover {
+            opacity: 0.9;
+            transform: scale(1.02);
+        }
+        .no-results {
+            text-align: center;
+            padding: 4rem 2rem;
+            color: var(--text-muted);
+            font-size: 1.2rem;
+            grid-column: 1 / -1;
+            background-color: var(--card-bg);
+            border: 1px solid var(--border-color);
+            border-radius: 12px;
+        }
+        .card-image-container {
+            position: relative;
+            cursor: pointer;
+            overflow: hidden;
+            border-top-left-radius: 12px;
+            border-top-right-radius: 12px;
+        }
+        .card-image-overlay {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background-color: rgba(11, 15, 25, 0.4);
+            color: #ffffff;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 0.9rem;
+            font-weight: 600;
+            opacity: 0;
+            transition: opacity 0.2s;
+        }
+        .card-image-container:hover .card-image-overlay {
+            opacity: 1;
+        }
+        .badge-photos-count {
+            position: absolute;
+            bottom: 10px;
+            right: 10px;
+            background-color: rgba(11, 15, 25, 0.85);
+            color: #ffffff;
+            padding: 0.2rem 0.5rem;
+            border-radius: 4px;
+            font-size: 0.75rem;
+            font-weight: 600;
+            border: 1px solid var(--border-color);
+        }
+        /* Modal Lightbox */
+        .modal {
+            display: none;
+            position: fixed;
+            z-index: 1000;
+            left: 0;
+            top: 0;
+            width: 100%;
+            height: 100%;
+            background-color: rgba(11, 15, 25, 0.95);
+            align-items: center;
+            justify-content: center;
+        }
+        .modal-content-wrapper {
+            position: relative;
+            max-width: 90%;
+            max-height: 85%;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+        }
+        .modal-img {
+            max-width: 100%;
+            max-height: 70vh;
+            object-fit: contain;
+            border-radius: 8px;
+            box-shadow: 0 0 30px rgba(0, 0, 0, 0.6);
+        }
+        .close-btn {
+            position: absolute;
+            top: -45px;
+            right: 0;
+            color: #ffffff;
+            font-size: 2.5rem;
+            font-weight: bold;
+            cursor: pointer;
+            transition: color 0.2s;
+            user-select: none;
+        }
+        .close-btn:hover {
+            color: var(--primary);
+        }
+        .nav-btn {
+            position: absolute;
+            top: 50%;
+            transform: translateY(-50%);
+            background-color: rgba(21, 27, 45, 0.7);
+            border: 1px solid var(--border-color);
+            color: #ffffff;
+            font-size: 2rem;
+            width: 50px;
+            height: 50px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            cursor: pointer;
+            border-radius: 50%;
+            transition: all 0.2s;
+            user-select: none;
+            outline: none;
+        }
+        .nav-btn:hover {
+            background-color: var(--primary);
+            color: #0b0f19;
+            border-color: var(--primary);
+        }
+        .prev-btn {
+            left: -70px;
+        }
+        .next-btn {
+            right: -70px;
+        }
+        @media (max-width: 768px) {
+            .prev-btn { left: 10px; }
+            .next-btn { right: 10px; }
+            .modal-img { max-height: 60vh; }
+            
+            /* Mejoras de texto responsivo para móvil */
+            body {
+                font-size: 18px;
+            }
+            .card-title {
+                font-size: 1.5rem;
+            }
+            .card-description {
+                font-size: 1.15rem;
+            }
+            .card-meta {
+                font-size: 1.05rem;
+            }
+            .badge {
+                font-size: 0.85rem;
+                padding: 0.35rem 0.6rem;
+            }
+            .btn-link {
+                font-size: 1.15rem;
+                padding: 0.9rem 1.5rem;
+                width: 100%;
+                text-align: center;
+            }
+            
+            /* Textos más grandes en el panel de filtros en móvil */
+            .controls-panel label, 
+            .controls-panel input, 
+            .controls-panel select, 
+            .controls-panel button,
+            .controls-panel span {
+                font-size: 1.15rem !important;
+            }
+            
+            .controls-header span {
+                font-size: 1.35rem !important;
+            }
+            
+            .filter-btn {
+                padding: 0.9rem 1.3rem !important;
+            }
+        }
+        .modal-info {
+            margin-top: 1rem;
+            color: var(--text-color);
+            font-size: 1rem;
+            text-align: center;
+            font-weight: 600;
+        }
+        .thumbnails-container {
+            display: flex;
+            gap: 0.5rem;
+            margin-top: 1rem;
+            overflow-x: auto;
+            max-width: 100%;
+            padding: 0.5rem;
+        }
+        .thumb-img {
+            width: 50px;
+            height: 50px;
+            object-fit: cover;
+            border-radius: 4px;
+            cursor: pointer;
+            opacity: 0.5;
+            border: 2px solid transparent;
+            transition: all 0.2s;
+        }
+        .thumb-img.active, .thumb-img:hover {
+            opacity: 1;
+            border-color: var(--primary);
+        }
+        .card-actions {
+            position: absolute;
+            top: 10px;
+            left: 10px;
+            display: flex;
+            gap: 0.4rem;
+            z-index: 10;
+        }
+        .action-btn {
+            background-color: rgba(11, 15, 25, 0.85);
+            border: 1px solid var(--border-color);
+            color: #ffffff;
+            width: 38px;
+            height: 38px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            cursor: pointer;
+            font-size: 1.25rem;
+            transition: all 0.2s;
+            outline: none;
+            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.4);
+        }
+        .action-btn:hover {
+            border-color: var(--primary);
+            transform: scale(1.1);
+        }
+        .action-btn.fav.active {
+            color: var(--gold);
+            border-color: var(--gold);
+            background-color: rgba(251, 191, 36, 0.15);
+        }
+        .action-btn.dismiss:hover {
+            color: var(--danger);
+            border-color: var(--danger);
+            background-color: rgba(239, 68, 68, 0.15);
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <header>
+            <div>
+                <h1>Wallapop Wingfoil Dashboard</h1>
+                <p style="color: var(--text-muted); font-size: 0.9rem; margin-top: 0.2rem;">Panel interactivo de resultados obtenidos en tiempo real</p>
+            </div>
+            <div id="update-timestamp" style="font-size: 0.85rem; color: var(--text-muted); text-align: right;"></div>
+        </header>
+
+        <div class="stats" style="margin-bottom: 2rem;">
+            <div class="stat-card" style="min-width: 260px; flex: 1.2;">
+                <h3>Resumen de Anuncios</h3>
+                <div style="display: flex; justify-content: space-around; align-items: center; margin-top: 0.5rem; gap: 0.5rem;">
+                    <div style="text-align: center; flex: 1;">
+                        <span style="font-size: 0.75rem; color: var(--text-muted); text-transform: uppercase;">Total</span>
+                        <p id="stat-total" style="font-size: 1.5rem; color: #ffffff; font-weight: 700; margin-top: 0.1rem;">0</p>
+                    </div>
+                    <div style="text-align: center; border-left: 1px solid var(--border-color); border-right: 1px solid var(--border-color); flex: 1.2; padding: 0 0.5rem;">
+                        <span style="font-size: 0.75rem; color: var(--text-muted); text-transform: uppercase;">Disponibles</span>
+                        <p id="stat-available" style="font-size: 1.5rem; color: #34d399; font-weight: 700; margin-top: 0.1rem;">0</p>
+                    </div>
+                    <div style="text-align: center; flex: 1;">
+                        <span style="font-size: 0.75rem; color: var(--text-muted); text-transform: uppercase;">Con Envío</span>
+                        <p id="stat-shippable" style="font-size: 1.5rem; color: #a78bfa; font-weight: 700; margin-top: 0.1rem;">0</p>
+                    </div>
+                </div>
+            </div>
+            <div class="stat-card" style="min-width: 260px; flex: 1.5; border-color: rgba(16, 185, 129, 0.15);">
+                <h3>Precios (Mín / Prom / Máx)</h3>
+                <div style="display: flex; justify-content: space-around; align-items: center; margin-top: 0.5rem; gap: 0.5rem;">
+                    <div style="text-align: center; flex: 1;">
+                        <span style="font-size: 0.75rem; color: var(--text-muted); text-transform: uppercase;">Mín</span>
+                        <p id="price-min" style="font-size: 1.5rem; color: var(--primary); font-weight: 700; margin-top: 0.1rem;">0€</p>
+                    </div>
+                    <div style="text-align: center; border-left: 1px solid var(--border-color); border-right: 1px solid var(--border-color); flex: 1.2; padding: 0 0.5rem;">
+                        <span style="font-size: 0.75rem; color: var(--text-muted); text-transform: uppercase;">Prom</span>
+                        <p id="price-avg" style="font-size: 1.5rem; color: #60a5fa; font-weight: 700; margin-top: 0.1rem;">0€</p>
+                    </div>
+                    <div style="text-align: center; flex: 1;">
+                        <span style="font-size: 0.75rem; color: var(--text-muted); text-transform: uppercase;">Máx</span>
+                        <p id="price-max" style="font-size: 1.5rem; color: var(--danger); font-weight: 700; margin-top: 0.1rem;">0€</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="controls-panel" style="background-color: var(--card-bg); border: 1px solid var(--border-color); border-radius: 12px; padding: 1.2rem; margin-bottom: 2rem;">
+            <div class="controls-header" style="display: flex; justify-content: space-between; align-items: center; cursor: pointer; user-select: none;" onclick="toggleFilters()">
+                <span style="font-weight: 700; font-size: 1.15rem; display: flex; align-items: center; gap: 0.5rem; color: #ffffff;">
+                    🔍 Panel de Filtros y Búsqueda
+                </span>
+                <button id="toggle-filters-btn" style="background: transparent; border: 1px solid var(--border-color); border-radius: 6px; color: var(--text-muted); padding: 0.4rem 0.8rem; font-size: 0.9rem; cursor: pointer; font-weight: 600; transition: all 0.2s;">
+                    Ocultar Filtros
+                </button>
+            </div>
+            
+            <div id="filters-container" style="margin-top: 1.2rem; transition: max-height 0.3s ease-out, opacity 0.3s ease-out; overflow: hidden; max-height: 1200px; opacity: 1;">
+            <!-- Fila 1: Búsqueda y Limpieza -->
+            <div style="display: flex; gap: 1rem; width: 100%; flex-wrap: wrap; margin-bottom: 1rem;">
+                <div class="search-box">
+                    <input type="text" id="search-input" placeholder="Buscar por título, ubicación o descripción...">
+                </div>
+                <button class="filter-btn" onclick="resetFilters()" style="background-color: rgba(239, 68, 68, 0.1); border-color: rgba(239, 68, 68, 0.2); color: var(--danger); font-weight: 600; padding: 0.8rem 1.5rem;">Limpiar Filtros</button>
+            </div>
+            
+            <!-- Fila 2: Rangos numéricos y Ordenación -->
+            <div style="display: flex; gap: 1rem; width: 100%; flex-wrap: wrap; justify-content: space-between; align-items: center; margin-bottom: 1rem;">
+                <div style="display: flex; gap: 0.8rem; flex-wrap: wrap; align-items: center; border: 1px solid var(--border-color); padding: 0.6rem 1rem; border-radius: 8px; background-color: rgba(0,0,0,0.15);">
+                    <div style="display: flex; align-items: center; gap: 0.4rem;">
+                        <label for="liters-min" style="font-size: 0.85rem; color: var(--text-muted); font-weight: 600;">Litros Mín:</label>
+                        <input type="number" id="liters-min" placeholder="Ej. 80" style="width: 70px; padding: 0.4rem 0.5rem; background-color: var(--bg-color); border: 1px solid var(--border-color); border-radius: 6px; color: var(--text-color); font-family: inherit; font-size: 0.9rem; outline: none;">
+                    </div>
+                    <div style="display: flex; align-items: center; gap: 0.4rem;">
+                        <label for="liters-max" style="font-size: 0.85rem; color: var(--text-muted); font-weight: 600;">Litros Máx:</label>
+                        <input type="number" id="liters-max" placeholder="Ej. 120" style="width: 70px; padding: 0.4rem 0.5rem; background-color: var(--bg-color); border: 1px solid var(--border-color); border-radius: 6px; color: var(--text-color); font-family: inherit; font-size: 0.9rem; outline: none;">
+                    </div>
+                    <div style="display: flex; align-items: center; gap: 0.4rem; border-left: 1px solid var(--border-color); padding-left: 0.8rem;">
+                        <label for="wing-min" style="font-size: 0.85rem; color: var(--text-muted); font-weight: 600;">Ala Mín:</label>
+                        <input type="number" step="0.1" id="wing-min" placeholder="Ej. 4" style="width: 65px; padding: 0.4rem 0.5rem; background-color: var(--bg-color); border: 1px solid var(--border-color); border-radius: 6px; color: var(--text-color); font-family: inherit; font-size: 0.9rem; outline: none;">
+                    </div>
+                    <div style="display: flex; align-items: center; gap: 0.4rem;">
+                        <label for="wing-max" style="font-size: 0.85rem; color: var(--text-muted); font-weight: 600;">Ala Máx:</label>
+                        <input type="number" step="0.1" id="wing-max" placeholder="Ej. 6" style="width: 65px; padding: 0.4rem 0.5rem; background-color: var(--bg-color); border: 1px solid var(--border-color); border-radius: 6px; color: var(--text-color); font-family: inherit; font-size: 0.9rem; outline: none;">
+                    </div>
+                    <div style="display: flex; align-items: center; gap: 0.4rem; border-left: 1px solid var(--border-color); padding-left: 0.8rem;">
+                        <label for="price-min-filter" style="font-size: 0.85rem; color: var(--text-muted); font-weight: 600;">Precio Mín:</label>
+                        <input type="number" id="price-min-filter" placeholder="Ej. 100" style="width: 70px; padding: 0.4rem 0.5rem; background-color: var(--bg-color); border: 1px solid var(--border-color); border-radius: 6px; color: var(--text-color); font-family: inherit; font-size: 0.9rem; outline: none;">
+                    </div>
+                    <div style="display: flex; align-items: center; gap: 0.4rem;">
+                        <label for="price-max-filter" style="font-size: 0.85rem; color: var(--text-muted); font-weight: 600;">Precio Máx:</label>
+                        <input type="number" id="price-max-filter" placeholder="Ej. 500" style="width: 70px; padding: 0.4rem 0.5rem; background-color: var(--bg-color); border: 1px solid var(--border-color); border-radius: 6px; color: var(--text-color); font-family: inherit; font-size: 0.9rem; outline: none;">
+                    </div>
+                </div>
+                
+                <select class="sort-select" id="sort-select">
+                    <option value="default">Relevancia por defecto</option>
+                    <option value="price-asc">Precio: de Menor a Mayor</option>
+                    <option value="price-desc">Precio: de Mayor a Menor</option>
+                    <option value="liters-asc">Litros: de Menor a Mayor</option>
+                    <option value="liters-desc">Litros: de Mayor a Menor</option>
+                    <option value="wing-asc">Tamaño de Ala: de Menor a Mayor</option>
+                    <option value="wing-desc">Tamaño de Ala: de Mayor a Menor</option>
+                    <option value="date-desc">Fecha: Más recientes</option>
+                </select>
+            </div>
+
+            <!-- Fila 3: Botones de Categorías y Tipos de Material -->
+            <div style="display: flex; gap: 1rem; width: 100%; flex-wrap: wrap; justify-content: space-between; align-items: center; border-top: 1px solid var(--border-color); padding-top: 1rem;">
+                <!-- Filtros Principales -->
+                <div class="filter-group">
+                    <button class="filter-btn active" data-filter="all">Todos</button>
+                    <button class="filter-btn" data-filter="matches">Cumplen Criterios</button>
+                    <button class="filter-btn" data-filter="available">Solo Disponibles</button>
+                    <button class="filter-btn" data-filter="shipping">Admite Envío</button>
+                    <button class="filter-btn" data-filter="favs" style="color: var(--gold); border-color: rgba(251,191,36,0.35);">⭐ Favoritos</button>
+                    <button class="filter-btn" data-filter="dismissed" style="color: var(--text-muted); border-color: var(--border-color);">🗑️ Descartes</button>
+                </div>
+
+                <!-- Filtros de Categoría -->
+                <div class="filter-group" id="category-filter-group">
+                    <button class="filter-btn active" data-category="all">Todo</button>
+                    <button class="filter-btn" data-category="board">Tablas</button>
+                    <button class="filter-btn" data-category="wing">Wings / Alas</button>
+                    <button class="filter-btn" data-category="foil">Foils</button>
+                    <button class="filter-btn" data-category="other">Accesorios/Otros</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+        <div id="filter-status" style="font-size: 0.95rem; color: var(--text-muted); margin-top: 1.5rem; margin-bottom: 1rem; font-weight: 600; display: flex; justify-content: space-between; align-items: center;">
+            <span id="results-count">Mostrando 0 de 0 anuncios</span>
+        </div>
+
+        <div class="grid" id="listings-grid">
+            <!-- Cards rendered here by Javascript -->
+        </div>
+    </div>
+
+    <script>
+        const listings = [{"titulo": "Tabla Wingfoil Reedin Feather 138l", "precio": "999.0", "ubicacion": "Tarifa, 11380", "descripcion": "Tabla de wingfoil Reedin Feather con 138 litros de volumen. Diseño moderno y ligero.\n\n- Modelo: Feather\n- Volumen: 138L\n- Color: Blanco con detalles grises y negros\n- Diseño con pads antideslizantes\n- Incluye boardbag\n\n\n[F-One Rocket, Duotone Sky, Gong Hipe, Naish Hover, Starboard TakeOff, North Seek, KT Ginxu, Cabrinha Code, Slingshot Outwit, Appletree Appleslice, Armstrong Forward, RRD Beluga, Tabou Pocket, Ensis RocknRoll, Sunova Aviator, Takoon Comet, Reedin Feather, Kalama E3, AK Phazer, Omen Flux, AFS Fire, Freedom Rubix, PPC Soar, Sabfoil Tormento, Eleveight Escape]", "url": "https://es.wallapop.com/item/tabla-wingfoil-reedin-feather-138l-1221921518", "litros_detectados": "[138]", "ala_detectada": "[]", "cumple_criterios": false, "fecha_publicacion": "2026-06-12", "envio": "Envío disponible", "estado": "Disponible", "imagen": "https://cdn.wallapop.com/images/10420/k7/i0/__/c10420p1221921518/i6235230543.jpg?pictureSize=W640"}, {"titulo": "Alquiler Equipo Wingfoil", "precio": "1.0", "ubicacion": "Moaña, 36950", "descripcion": "Vas a un spot en el que no navegas habitualmente y necesitas material diatinto o quieres probar algo nuevo? En Foil Fanatics tenemos disponibles equipos de alta gama para que pruebes, disfrutes siempre. Enviamos a toda peninsula + baleares. posibilidad de alquiler de larga duracion!\n\nmaterial disponible:\n\nwing ozone:\nwasp v2: 4m, 6m\nwasp v3: 3.6m, 4.3m, 5.0m, 5.7m\nflow 5m, 5.7m\nfusion: 5m\n\nfoils full carbon:\n\napex, mastil 90cm, alas delanteras: 950, 1250, 1500, 1200 LA (kite)\n\nsabfoil kraken, plato o tuttle, 83cm, 93cm\nala delanteras: w1100 2100cm2, medusa 799 1100cm2\n\ntablas ozone:\napex kite foil\nrise full carbon 75L, 90L", "url": "https://es.wallapop.com/item/alquiler-equipo-wingfoil-1007174941", "litros_detectados": "[75, 90]", "ala_detectada": "[3.6, 4, 4.3, 5, 5.7, 6]", "cumple_criterios": false, "fecha_publicacion": "2026-07-08", "envio": "Envío disponible", "estado": "Disponible", "imagen": "https://cdn.wallapop.com/images/10420/gn/n9/__/c10420p1007174941/i4900591101.jpg?pictureSize=W640|https://cdn.wallapop.com/images/10420/gn/n9/__/c10420p1007174941/i4900591135.jpg?pictureSize=W640|https://cdn.wallapop.com/images/10420/gn/n9/__/c10420p1007174941/i4900591142.jpg?pictureSize=W640"}, {"titulo": "Equipo wingfoil completo", "precio": "850.0", "ubicacion": "Murcia, 30010", "descripcion": "Conjunto completo GONG de wing foil, perfecto para iniciarse:\n\n-Tabla hinchable GONG HIPE 5.5 (145l)\n\n-Wing GONG Neutra V.2 (6m2)\n\n-Foil GONG Allvator V2 X-Over XXL     con dos mástiles (65 cm y 85 cm).\n\n-Todas las bolsas de transporte originales y todos los accesorios (hinchador, tornillos, cinchas…)\n\n- traje de neopreno, pantalones   de neopreno y casco, talla L.\n\nEquipo con menos de 10 baños, sin óxidos, sin pinchazos ni reparaciones, en perfecto estado.", "url": "https://es.wallapop.com/item/equipo-wingfoil-completo-1278990598", "litros_detectados": "[145]", "ala_detectada": "[6]", "cumple_criterios": true, "fecha_publicacion": "2026-07-07", "envio": "Envío disponible", "estado": "Reservado", "imagen": "https://cdn.wallapop.com/images/10420/l5/h7/__/c10420p1278990598/i6600501338.jpg?pictureSize=W640|https://cdn.wallapop.com/images/10420/l5/h7/__/c10420p1278990598/i6600501420.jpg?pictureSize=W640|https://cdn.wallapop.com/images/10420/l5/h7/__/c10420p1278990598/i6600501396.jpg?pictureSize=W640|https://cdn.wallapop.com/images/10420/l5/h7/__/c10420p1278990598/i6600501360.jpg?pictureSize=W640|https://cdn.wallapop.com/images/10420/l5/h7/__/c10420p1278990598/i6600501380.jpg?pictureSize=W640|https://cdn.wallapop.com/images/10420/l5/h7/__/c10420p1278990598/i6600501414.jpg?pictureSize=W640|https://cdn.wallapop.com/images/10420/l5/h7/__/c10420p1278990598/i6600501429.jpg?pictureSize=W640|https://cdn.wallapop.com/images/10420/l5/h7/__/c10420p1278990598/i6600501437.jpg?pictureSize=W640|https://cdn.wallapop.com/images/10420/l5/h7/__/c10420p1278990598/i6600501372.jpg?pictureSize=W640|https://cdn.wallapop.com/images/10420/l5/h7/__/c10420p1278990598/i6600501350.jpg?pictureSize=W640"}, {"titulo": "Cabrinha Macro Air 140L Tabla Wingfoil", "precio": "400.0", "ubicacion": "Castelldefels, 08860", "descripcion": "Tabla de wingfoil Cabrinha Macro Air de 140 litros. \nhinchable\npara aprender es perfecta\nmuy estable", "url": "https://es.wallapop.com/item/cabrinha-macro-air-140l-tabla-foil-1183802767", "litros_detectados": "[140]", "ala_detectada": "[]", "cumple_criterios": false, "fecha_publicacion": "2026-06-08", "envio": "Envío disponible", "estado": "Disponible", "imagen": "https://cdn.wallapop.com/images/10420/jk/t0/__/c10420p1183802767/i5978642825.jpg?pictureSize=W640|https://cdn.wallapop.com/images/10420/jk/t0/__/c10420p1183802767/i5978642851.jpg?pictureSize=W640|https://cdn.wallapop.com/images/10420/jk/t0/__/c10420p1183802767/i5978642837.jpg?pictureSize=W640"}, {"titulo": "Ala Wingfoil Duotone 6.0", "precio": "320.0", "ubicacion": "Palma de Mallorca, 07002", "descripcion": "Ala de wingfoil Duotone de 6.0 metros cuadrados. Diseñada para ofrecer un rendimiento óptimo en diversas condiciones.\n\n- Color principal gris y verde menta.\n- Ventanas transparentes para visibilidad.\n- Logo de Duotone visible.\nIncluye bolsa de transporte", "url": "https://es.wallapop.com/item/ala-wingfoil-duotone-6-0-1267543078", "litros_detectados": "[]", "ala_detectada": "[6]", "cumple_criterios": false, "fecha_publicacion": "2026-07-06", "envio": "Envío disponible", "estado": "Disponible", "imagen": "https://cdn.wallapop.com/images/10420/ky/nu/__/c10420p1267543078/i6529032046.jpg?pictureSize=W640|https://cdn.wallapop.com/images/10420/ky/nu/__/c10420p1267543078/i6529032096.jpg?pictureSize=W640|https://cdn.wallapop.com/images/10420/ky/nu/__/c10420p1267543078/i6529032073.jpg?pictureSize=W640|https://cdn.wallapop.com/images/10420/ky/nu/__/c10420p1267543078/i6529032053.jpg?pictureSize=W640|https://cdn.wallapop.com/images/10420/ky/nu/__/c10420p1267543078/i6529032061.jpg?pictureSize=W640|https://cdn.wallapop.com/images/10420/ky/nu/__/c10420p1267543078/i6529032084.jpg?pictureSize=W640"}, {"titulo": "Vela Wingfoil North Nova Pro 6m2 2025", "precio": "625.0", "ubicacion": "Torrelles de Llobregat, 08629", "descripcion": "Vela de wingfoil North Nova Pro de 6m2 del modelo 2025. Diseñada para ofrecer un rendimiento excepcional.\n\n- Color blanco con detalles en negro y azul.\n- Ventanas transparentes para visibilidad.\n- ningún desperfecto \n-incluye la botavara de carbono", "url": "https://es.wallapop.com/item/vela-wingfoil-north-nova-pro-6m2-2025-1278843879", "litros_detectados": "[]", "ala_detectada": "[6]", "cumple_criterios": false, "fecha_publicacion": "2026-07-05", "envio": "Envío disponible", "estado": "Disponible", "imagen": "https://cdn.wallapop.com/images/10420/l5/e2/__/c10420p1278843879/i6599825074.jpg?pictureSize=W640|https://cdn.wallapop.com/images/10420/l5/e2/__/c10420p1278843879/i6599825130.jpg?pictureSize=W640|https://cdn.wallapop.com/images/10420/l5/e2/__/c10420p1278843879/i6599825145.jpg?pictureSize=W640|https://cdn.wallapop.com/images/10420/l5/e2/__/c10420p1278843879/i6599825092.jpg?pictureSize=W640|https://cdn.wallapop.com/images/10420/l5/e2/__/c10420p1278843879/i6599825082.jpg?pictureSize=W640|https://cdn.wallapop.com/images/10420/l5/e2/__/c10420p1278843879/i6599825087.jpg?pictureSize=W640|https://cdn.wallapop.com/images/10420/l5/e2/__/c10420p1278843879/i6599825103.jpg?pictureSize=W640|https://cdn.wallapop.com/images/10420/l5/e2/__/c10420p1278843879/i6599825115.jpg?pictureSize=W640|https://cdn.wallapop.com/images/10420/l5/e2/__/c10420p1278843879/i6599825160.jpg?pictureSize=W640"}, {"titulo": "Tabla de WINGFOIL Naish 140L", "precio": "810.0", "ubicacion": "Barcelona, 08003", "descripcion": "🌊¡Ponemos a la venta nuestro material de Escuela!!\n\n🦅 Tabla Wing Foil 140L\n🏆 Marca: Naish\n📐 Medidas: 140L - 6’6” x 33” x 4 3/5”\nFULL CARBON\n\n🪢 Leash +30€\n🔩 Tornillaje +20€\n\n✨ Estado del producto:\n✅ Muy buenas condiciones, muy poco uso\n✅ Totalmente revisado y comprobado.\n✅ 6 meses de garantia\n\n\n🏠 Passate por nuestra escuela a verla \n📦 Envíos gratuitos\n📲 Contáctanos sin compromiso:\n💬 Escríbenos por WhatsApp o llámanos al +34 605684056 📞\n\n🏠 Passate por nuestra escuela a verla:\n📍Psg. Joan Borbo, 78, Local 7 / La Barceloneta", "url": "https://es.wallapop.com/item/tabla-de-wingfoil-naish-952744957", "litros_detectados": "[140]", "ala_detectada": "[]", "cumple_criterios": false, "fecha_publicacion": "2025-12-18", "envio": "Envío disponible", "estado": "Disponible", "imagen": "https://cdn.wallapop.com/images/10420/fr/8m/__/c10420p952744957/i3584945774.jpg?pictureSize=W640|https://cdn.wallapop.com/images/10420/fr/8m/__/c10420p952744957/i3585621208.jpg?pictureSize=W640|https://cdn.wallapop.com/images/10420/fr/8m/__/c10420p952744957/i3585621200.jpg?pictureSize=W640"}, {"titulo": "Vela North Nova 6m", "precio": "400.0", "ubicacion": "Palma de Mallorca, 07005", "descripcion": "Vela de wingfoil North Nova de 6 metros. Se encuentra en buen estado.\n\n- Diseño moderno y funcional.\n- Marca: North Sails.\n- Modelo: Nova.\n- Tamaño: 6.0 m².", "url": "https://es.wallapop.com/item/vela-north-nova-6m-1268481055", "litros_detectados": "[]", "ala_detectada": "[6]", "cumple_criterios": false, "fecha_publicacion": "2026-06-02", "envio": "Envío disponible", "estado": "Disponible", "imagen": "https://cdn.wallapop.com/images/10420/kz/7y/__/c10420p1268481055/i6534730468.jpg?pictureSize=W640|https://cdn.wallapop.com/images/10420/kz/7y/__/c10420p1268481055/i6534730578.jpg?pictureSize=W640|https://cdn.wallapop.com/images/10420/kz/7y/__/c10420p1268481055/i6534730660.jpg?pictureSize=W640|https://cdn.wallapop.com/images/10420/kz/7y/__/c10420p1268481055/i6534730805.jpg?pictureSize=W640|https://cdn.wallapop.com/images/10420/kz/7y/__/c10420p1268481055/i6534731034.jpg?pictureSize=W640|https://cdn.wallapop.com/images/10420/kz/7y/__/c10420p1268481055/i6534731143.jpg?pictureSize=W640"}, {"titulo": "Ala F-ONE Strike V2 WCW 6 m", "precio": "330.0", "ubicacion": "Badajoz, 06003", "descripcion": "Potente y ligera ala de  Wingfoil F-ONE Strike v2 WCW siendo más estrecha que otros modelos, para no dar con las puntas en el agua\nDe 6 metros cuadrados.\nEn perfecto, estado, muy poco uso, sin  reparación.", "url": "https://es.wallapop.com/item/ala-f-one-strike-wcw-6-m-1263838131", "litros_detectados": "[]", "ala_detectada": "[6]", "cumple_criterios": false, "fecha_publicacion": "2026-06-21", "envio": "Envío disponible", "estado": "Disponible", "imagen": "https://cdn.wallapop.com/images/10420/kw/gf/__/c10420p1263838131/i6506693125.jpg?pictureSize=W640|https://cdn.wallapop.com/images/10420/kw/gf/__/c10420p1263838131/i6506693183.jpg?pictureSize=W640|https://cdn.wallapop.com/images/10420/kw/gf/__/c10420p1263838131/i6506693172.jpg?pictureSize=W640|https://cdn.wallapop.com/images/10420/kw/gf/__/c10420p1263838131/i6506693159.jpg?pictureSize=W640|https://cdn.wallapop.com/images/10420/kw/gf/__/c10420p1263838131/i6506693152.jpg?pictureSize=W640|https://cdn.wallapop.com/images/10420/kw/gf/__/c10420p1263838131/i6506693147.jpg?pictureSize=W640|https://cdn.wallapop.com/images/10420/kw/gf/__/c10420p1263838131/i6506693142.jpg?pictureSize=W640|https://cdn.wallapop.com/images/10420/kw/gf/__/c10420p1263838131/i6506693138.jpg?pictureSize=W640|https://cdn.wallapop.com/images/10420/kw/gf/__/c10420p1263838131/i6506693179.jpg?pictureSize=W640|https://cdn.wallapop.com/images/10420/kw/gf/__/c10420p1263838131/i6506693163.jpg?pictureSize=W640"}, {"titulo": "Tabla Gong Cruzader 8.2 145L", "precio": "499.0", "ubicacion": "Berben, 11500", "descripcion": "Tabla Gong Cruzader de 8.2 19 1/2 7 3/16 145L\nEn excelente estado, un toque en la popa por la parte superior hecho en el garaje al guardarla, únicamente es pintura (se podría entregar reparado si se desea, no se repara para que se vea realmente el toque) \n\nPerfecta para SUP foil, downwind, ligthwind o flat start.\n\nLiteralmente la tabla corre sola bombeando y sale al volar casi sin esfuerzo. \n\nSe acepta cambio por tabla de este estilo de 20 maximo de manga y 6.3 de eslora o midlength de unos 100L\n\ninvento/ foil/hydrofoil/wingfoil/kitefoil/duotone/onada/olas/fanatic/gong/slingshot/zaoli/ion/north/flysurfer/wingfoil/ozone/fone/cabrinha", "url": "https://es.wallapop.com/item/tabla-gong-cruzader-8-2-145l-1270834762", "litros_detectados": "[100, 145]", "ala_detectada": "[]", "cumple_criterios": false, "fecha_publicacion": "2026-07-05", "envio": "Envío disponible", "estado": "Disponible", "imagen": "https://cdn.wallapop.com/images/10420/l0/me/__/c10420p1270834762/i6550929139.jpg?pictureSize=W640|https://cdn.wallapop.com/images/10420/l0/me/__/c10420p1270834762/i6550929154.jpg?pictureSize=W640|https://cdn.wallapop.com/images/10420/l0/me/__/c10420p1270834762/i6550929196.jpg?pictureSize=W640|https://cdn.wallapop.com/images/10420/l0/me/__/c10420p1270834762/i6550929159.jpg?pictureSize=W640|https://cdn.wallapop.com/images/10420/l0/me/__/c10420p1270834762/i6550929183.jpg?pictureSize=W640|https://cdn.wallapop.com/images/10420/l0/me/__/c10420p1270834762/i6550929191.jpg?pictureSize=W640|https://cdn.wallapop.com/images/10420/l0/me/__/c10420p1270834762/i6550929201.jpg?pictureSize=W640|https://cdn.wallapop.com/images/10420/l0/me/__/c10420p1270834762/i6550929166.jpg?pictureSize=W640|https://cdn.wallapop.com/images/10420/l0/me/__/c10420p1270834762/i6550929206.jpg?pictureSize=W640|https://cdn.wallapop.com/images/10420/l0/me/__/c10420p1270834762/i6550929173.jpg?pictureSize=W640"}, {"titulo": "Freewing Air V5 6 metros como nueva", "precio": "1000.0", "ubicacion": "Sant Joan de Moró, 12130", "descripcion": "Vendo Freewing Air V5 de 6 metros.  Está igual que nueva, solo un uso de una hora, ni se ha mojado... \nMarca de Starboard y airush \nModelo allround high performance \nAla de wingfoil de rendimiento\nMuy rígida y ligera, muy buena remada y empieza con muy poco viento, material en el paño code X que hace que no se deforme ni se estire, y si se hace un corte que no se alargue.. \nBotavara de carbono de una pieza, y varias ventanas para facilitar la visión.. \nVendo por cambiar a modelo 2026\nIncluye leash de cintura", "url": "https://es.wallapop.com/item/freewing-air-v5-6-metros-como-nueva-1168554805", "litros_detectados": "[]", "ala_detectada": "[6]", "cumple_criterios": false, "fecha_publicacion": "2026-05-25", "envio": "Envío disponible", "estado": "Disponible", "imagen": "https://cdn.wallapop.com/images/10420/jb/q6/__/c10420p1168554805/i5894654530.jpg?pictureSize=W640|https://cdn.wallapop.com/images/10420/jb/q6/__/c10420p1168554805/i5894654537.jpg?pictureSize=W640|https://cdn.wallapop.com/images/10420/jb/q6/__/c10420p1168554805/i5894654550.jpg?pictureSize=W640|https://cdn.wallapop.com/images/10420/jb/q6/__/c10420p1168554805/i5894654560.jpg?pictureSize=W640|https://cdn.wallapop.com/images/10420/jb/q6/__/c10420p1168554805/i5894654577.jpg?pictureSize=W640|https://cdn.wallapop.com/images/10420/jb/q6/__/c10420p1168554805/i5894654603.jpg?pictureSize=W640|https://cdn.wallapop.com/images/10420/jb/q6/__/c10420p1168554805/i5894654615.jpg?pictureSize=W640|https://cdn.wallapop.com/images/10420/jb/q6/__/c10420p1168554805/i5894654629.jpg?pictureSize=W640|https://cdn.wallapop.com/images/10420/jb/q6/__/c10420p1168554805/i5894654643.jpg?pictureSize=W640"}, {"titulo": "Ala Wingfoil 6m North", "precio": "320.0", "ubicacion": "Las Rozas de Madrid, 28230", "descripcion": "Ala (Wing) North Nova de 6m2 en estado impecable. Una de las mejores velas del mercado por su construcción premium, rigidez y durabilidad. Diseño geométrico muy compacto: ofrece la potencia y el tiro de una 6m2 ideal para vientos flojos o térmicos, pero con una envergadura optimizada que evita que las puntas toquen el agua al aprender. Cuenta con asas rígidas/ergonómicas que reducen la fatiga en los brazos y dan un control milimétrico. Tejido crujiente, sin poros, ni pérdidas de presión en las válvulas. Incluye su mochila.\n\nwingfoil surf kite nova vela foil duotone f one tabla ala", "url": "https://es.wallapop.com/item/vela-wing-nova-5-0-1274508074", "litros_detectados": "[]", "ala_detectada": "[6]", "cumple_criterios": false, "fecha_publicacion": "2026-06-28", "envio": "Envío disponible", "estado": "Disponible", "imagen": "https://cdn.wallapop.com/images/10420/l2/t4/__/c10420p1274508074/i6572180455.jpg?pictureSize=W640"}, {"titulo": "Tabla wingfoil supfoil carbono Gong Cruzader 6'10", "precio": "650.0", "ubicacion": "Alicante/Alacant, 03010", "descripcion": "Tabla de wingfoil y supfoil Gong Cruzader Diamond Pro 6,10 140L. Usada solo un día. Protegida toda la proa y los cantos con cinta transparente. Funda incluida a estrenar también. \n\n- Modelo: Cruzader Diamond Pro\n- Tamaño: 6'10\n- Material: Carbono", "url": "https://es.wallapop.com/item/tabla-wingfoil-supfoil-carbono-gong-cruzader-6-10-1264215933", "litros_detectados": "[140]", "ala_detectada": "[]", "cumple_criterios": false, "fecha_publicacion": "2026-06-13", "envio": "Envío disponible", "estado": "Disponible", "imagen": "https://cdn.wallapop.com/images/10420/kw/oj/__/c10420p1264215933/i6509196537.jpg?pictureSize=W640|https://cdn.wallapop.com/images/10420/kw/oj/__/c10420p1264215933/i6509196621.jpg?pictureSize=W640|https://cdn.wallapop.com/images/10420/kw/oj/__/c10420p1264215933/i6509196737.jpg?pictureSize=W640|https://cdn.wallapop.com/images/10420/kw/oj/__/c10420p1264215933/i6509196838.jpg?pictureSize=W640|https://cdn.wallapop.com/images/10420/kw/oj/__/c10420p1264215933/i6509196919.jpg?pictureSize=W640|https://cdn.wallapop.com/images/10420/kw/oj/__/c10420p1264215933/i6509197008.jpg?pictureSize=W640|https://cdn.wallapop.com/images/10420/kw/oj/__/c10420p1264215933/i6509205546.jpg?pictureSize=W640|https://cdn.wallapop.com/images/10420/kw/oj/__/c10420p1264215933/i6509205561.jpg?pictureSize=W640|https://cdn.wallapop.com/images/10420/kw/oj/__/c10420p1264215933/i6509205574.jpg?pictureSize=W640|https://cdn.wallapop.com/images/10420/kw/oj/__/c10420p1264215933/i6526664522.jpg?pictureSize=W640"}, {"titulo": "Vela Wingfoil Cabrinha Mantis 6m 2022", "precio": "250.0", "ubicacion": "Majadahonda, 28222", "descripcion": "Vela de wingfoil Cabrinha Mantis de 6 metros.\n\n- Modelo Mantis.\n- Tamaño 6m.\n- Marca Cabrinha.\n- Diseño con número 9.", "url": "https://es.wallapop.com/item/vela-wingfoil-cabrinha-mantis-6m-2022-1271300565", "litros_detectados": "[]", "ala_detectada": "[6]", "cumple_criterios": false, "fecha_publicacion": "2026-06-10", "envio": "Envío disponible", "estado": "Disponible", "imagen": "https://cdn.wallapop.com/images/10420/l0/wd/__/c10420p1271300565/i6553839130.jpg?pictureSize=W640|https://cdn.wallapop.com/images/10420/l0/wd/__/c10420p1271300565/i6553839142.jpg?pictureSize=W640|https://cdn.wallapop.com/images/10420/l0/wd/__/c10420p1271300565/i6553839148.jpg?pictureSize=W640|https://cdn.wallapop.com/images/10420/l0/wd/__/c10420p1271300565/i6553839153.jpg?pictureSize=W640|https://cdn.wallapop.com/images/10420/l0/wd/__/c10420p1271300565/i6553839156.jpg?pictureSize=W640|https://cdn.wallapop.com/images/10420/l0/wd/__/c10420p1271300565/i6553839159.jpg?pictureSize=W640|https://cdn.wallapop.com/images/10420/l0/wd/__/c10420p1271300565/i6553839165.jpg?pictureSize=W640|https://cdn.wallapop.com/images/10420/l0/wd/__/c10420p1271300565/i6553839171.jpg?pictureSize=W640|https://cdn.wallapop.com/images/10420/l0/wd/__/c10420p1271300565/i6553839178.jpg?pictureSize=W640|https://cdn.wallapop.com/images/10420/l0/wd/__/c10420p1271300565/i6553839186.jpg?pictureSize=W640"}, {"titulo": "Pack Wingfoil GONG HIPE First 6'6 X-Over", "precio": "975.0", "ubicacion": "Huelva, 21006", "descripcion": "Vendo pack completo de wingfoil GONG HIPE First X-Over, comprado para iniciarme y utilizado 3 veces.\n\nEstá en muy buen estado y se entrega completo, listo para entrar en el agua.\n\nIncluye:\n\n– Tabla hinchable GONG HIPE First 6'6, de 155 litros.\n– Foil GONG X-Over completo.\n– Mástil de aluminio de 85 cm.\n– Wing GONG Plus.\n– Leash de tabla y leash de wing.\n– Bomba de inflado.\n– Tornillería y accesorios de montaje.\n– Bolsa original compartimentada para transportar todo el equipo.\n\nEs un equipo ideal para iniciarse en el wingfoil, ya que la tabla tiene mucho volumen y ofrece una gran estabilidad antes de empezar a volar. Al ser hinchable", "url": "https://es.wallapop.com/item/pack-wingfoil-gong-hipe-first-6-6-x-over-1275682743", "litros_detectados": "[155]", "ala_detectada": "[]", "cumple_criterios": false, "fecha_publicacion": "2026-07-07", "envio": "Envío disponible", "estado": "Disponible", "imagen": "https://cdn.wallapop.com/images/10420/l3/ib/__/c10420p1275682743/i6578977759.jpg?pictureSize=W640|https://cdn.wallapop.com/images/10420/l3/ib/__/c10420p1275682743/i6578977771.jpg?pictureSize=W640|https://cdn.wallapop.com/images/10420/l3/ib/__/c10420p1275682743/i6578977777.jpg?pictureSize=W640"}, {"titulo": "Wingfoil a estrenar Gofko Aero 6 metros", "precio": "500.0", "ubicacion": "Poris de Abona, 38588", "descripcion": "nunca usado. Se entrega tal cual, con su mochila. \n\nGofko Aero 6 meters\n\nprecio nueva hoy 699 euros.", "url": "https://es.wallapop.com/item/wingfoil-a-estrenar-gofko-aero-6-metros-935883893", "litros_detectados": "[]", "ala_detectada": "[6]", "cumple_criterios": false, "fecha_publicacion": "2026-05-20", "envio": "Envío disponible", "estado": "Disponible", "imagen": "https://cdn.wallapop.com/images/10420/fh/78/__/c10420p935883893/i3483556062.jpg?pictureSize=W640|https://cdn.wallapop.com/images/10420/fh/78/__/c10420p935883893/i3483556112.jpg?pictureSize=W640"}, {"titulo": "Wing Ozone Fly V1 6m Seminuevo", "precio": "450.0", "ubicacion": "Alcúdia, 07400", "descripcion": "¡Oportunidad única! 🌊\nWing Ozone Fly V1 de 6 metros en muy buen estado (7/10). Perfecta para iniciarte o progresar en wingfoil sin complicaciones.\n\n✨ Características:\n• Medida: 6.0m - tamaño polivalente\n• Color: Amarillo \n• Estado: Seminuevo 7/10\n• Incluye: Leash modular de cintura + bolsa de transporte\n• Bomba NO incluida\n\n🎯 Por qué esta wing:\nDiseño limpio y ligero de Ozone Kites, una de las marcas más fiables del mercado. Ultra compacta y fácil de manejar, ideal tanto para principiantes como riders intermedios. Su configuración de asas Power Handle permite un agarre intuitivo y control total.\n📦 Incluye todo lo necesario", "url": "https://es.wallapop.com/item/wing-ozone-fly-v1-6m-seminuevo-1208932204", "litros_detectados": "[]", "ala_detectada": "[6]", "cumple_criterios": false, "fecha_publicacion": "2026-06-26", "envio": "Envío disponible", "estado": "Disponible", "imagen": "https://cdn.wallapop.com/images/10420/jz/rm/__/c10420p1208932204/i6156630964.jpg?pictureSize=W640|https://cdn.wallapop.com/images/10420/jz/rm/__/c10420p1208932204/i6156630952.jpg?pictureSize=W640|https://cdn.wallapop.com/images/10420/jz/rm/__/c10420p1208932204/i6156630949.jpg?pictureSize=W640|https://cdn.wallapop.com/images/10420/jz/rm/__/c10420p1208932204/i6154582554.jpg?pictureSize=W640|https://cdn.wallapop.com/images/10420/jz/rm/__/c10420p1208932204/i6154582557.jpg?pictureSize=W640|https://cdn.wallapop.com/images/10420/jz/rm/__/c10420p1208932204/i6154582553.jpg?pictureSize=W640|https://cdn.wallapop.com/images/10420/jz/rm/__/c10420p1208932204/i6154582565.jpg?pictureSize=W640|https://cdn.wallapop.com/images/10420/jz/rm/__/c10420p1208932204/i6154582570.jpg?pictureSize=W640"}, {"titulo": "Tabla wingfoil F-one Rocket Air 190L", "precio": "540.0", "ubicacion": "Sueca, 46410", "descripcion": "Tabla polivalente, sirve para iniciarse en el mundo del wingfoil, para paddel sup, incluso he llegado a aprender surf con ella.\n\nTiene dos quillas para tener un mejor control, usada muy pocas veces ya que aprendi rapidamente a controlarlo.\n\nPerfecta incluso en dias tranquilos para principiantes en el paddel sup.\n\nIncluyo bolsa, su correspondiente inchador F-ONE, las dos quillas, el kit de reparacion nuevo ya que nunca lo he usado.\n\nPara mas preguntar sin compromiso.", "url": "https://es.wallapop.com/item/tabla-wingfoil-f-one-rocket-air-190l-905541161", "litros_detectados": "[190]", "ala_detectada": "[]", "cumple_criterios": false, "fecha_publicacion": "2026-05-14", "envio": "Envío disponible", "estado": "Disponible", "imagen": "https://cdn.wallapop.com/images/10420/ez/4w/__/c10420p905541161/i3307223896.jpg?pictureSize=W640|https://cdn.wallapop.com/images/10420/ez/4w/__/c10420p905541161/i3307224066.jpg?pictureSize=W640|https://cdn.wallapop.com/images/10420/ez/4w/__/c10420p905541161/i3307224059.jpg?pictureSize=W640|https://cdn.wallapop.com/images/10420/ez/4w/__/c10420p905541161/i3307224075.jpg?pictureSize=W640|https://cdn.wallapop.com/images/10420/ez/4w/__/c10420p905541161/i3307224048.jpg?pictureSize=W640|https://cdn.wallapop.com/images/10420/ez/4w/__/c10420p905541161/i3307224041.jpg?pictureSize=W640"}, {"titulo": "Equipo Wingfoil Completo", "precio": "1230.0", "ubicacion": "Málaga, 29002", "descripcion": "equipo completo\ntabla tabou 87litros con funda Ion con 2 footstraps\nfoil Takoon X-Glide 1450\nala nitro 6m2\nala nitro 4m2\nregalo leash e inflador \nchaleco impacto \nla tabla tiene para vela de windsurf \ncambio por vespa \nPRECIO ALGO NEGOCIABLE", "url": "https://es.wallapop.com/item/equipo-wingfoil-completo-1061809108", "litros_detectados": "[87]", "ala_detectada": "[4, 6]", "cumple_criterios": false, "fecha_publicacion": "2026-05-23", "envio": "Envío disponible", "estado": "Disponible", "imagen": "https://cdn.wallapop.com/images/10420/hk/69/__/c10420p1061809108/i5194227398.jpg?pictureSize=W640|https://cdn.wallapop.com/images/10420/hk/69/__/c10420p1061809108/i5194227426.jpg?pictureSize=W640|https://cdn.wallapop.com/images/10420/hk/69/__/c10420p1061809108/i5194227495.jpg?pictureSize=W640|https://cdn.wallapop.com/images/10420/hk/69/__/c10420p1061809108/i5194227477.jpg?pictureSize=W640|https://cdn.wallapop.com/images/10420/hk/69/__/c10420p1061809108/i5194227459.jpg?pictureSize=W640|https://cdn.wallapop.com/images/10420/hk/69/__/c10420p1061809108/i5194227488.jpg?pictureSize=W640|https://cdn.wallapop.com/images/10420/hk/69/__/c10420p1061809108/i5194227498.jpg?pictureSize=W640|https://cdn.wallapop.com/images/10420/hk/69/__/c10420p1061809108/i5194227438.jpg?pictureSize=W640|https://cdn.wallapop.com/images/10420/hk/69/__/c10420p1061809108/i5194227470.jpg?pictureSize=W640|https://cdn.wallapop.com/images/10420/hk/69/__/c10420p1061809108/i5194228335.jpg?pictureSize=W640"}, {"titulo": "Tabla GONG SUP Foil Biggy EPS Pro 8'6 145L", "precio": "495.0", "ubicacion": "El Medano, 38612", "descripcion": "Tabla de SUP Foil GONG Biggy EPS Pro de 8'6 pies con 145 litros de volumen. Diseñada para foil y SUP.\n\nFunda 50 euroi\n\nPuede entregarse en cualquier aeropuerto importante de Europa a un precio fijo de 100 euros.\n\nArmstrong Code Foils NoLimitz Axis Foils Sabfoil F-One Lift Foils Unifoil GoFoil Takuma Naish Cabrinha North Foils Slingshot downwind wingfoil supfoil", "url": "https://es.wallapop.com/item/tabla-gong-sup-foil-biggy-eps-pro-8-6-145l-1259794710", "litros_detectados": "[145]", "ala_detectada": "[]", "cumple_criterios": false, "fecha_publicacion": "2026-07-04", "envio": "Envío disponible", "estado": "Disponible", "imagen": "https://cdn.wallapop.com/images/10420/ku/1r/__/c10420p1259794710/i6481598916.jpg?pictureSize=W640"}, {"titulo": "¡Oportunidad alas wingfoil!", "precio": "450.0", "ubicacion": "Sevilla, 41005", "descripcion": "Con las alas de 4.0 , 5.0 y 6.0 metros, garantizaras la navegación. Ver mi perfil para mas fotos", "url": "https://es.wallapop.com/item/oportunidad-alas-wingfoil-1269290825", "litros_detectados": "[]", "ala_detectada": "[4, 6]", "cumple_criterios": false, "fecha_publicacion": "2026-07-10", "envio": "Envío disponible", "estado": "Disponible", "imagen": "https://cdn.wallapop.com/images/10420/kz/pb/__/c10420p1269290825/i6541321955.jpg?pictureSize=W640|https://cdn.wallapop.com/images/10420/kz/pb/__/c10420p1269290825/i6541321972.jpg?pictureSize=W640|https://cdn.wallapop.com/images/10420/kz/pb/__/c10420p1269290825/i6541321988.jpg?pictureSize=W640"}, {"titulo": "PACK WINGFOIL MARCA NAISH (tabla, foil y vela)", "precio": "1850.0", "ubicacion": "Barcelona, 08003", "descripcion": "PACK APTO INICIACIÓN \nLiquidación de stock!! Dos packs disponibles!!\n~Pack de wingfoil~\nIncluye:\n1 tabla entre 85 litros y 140L\n1 foil 1750 de ala frontal\n1 Mastil 75cm + fuselaje\nFunda transporte del foil\n1 vela con funda de transporte (medida entre 4 y 5,5m)\n\nMaterial muy nuevo y en bien cuidado\nOpción de FOIL sin uso (sin abrir) por 100€ más.\n6 meses de garantía incluidos\n\nNo incluye: leash para la tabla, inflador, casco y chaleco\n\n\n🏠 Pasate por nuestra escuela a verl\n📦 Envíos gratuitos\n📲 Contáctanos sin compromiso:\n💬 Escríbenos por WhatsApp o llámanos al +34 605684056 📞\n📍Psg. Joan Borbo, 78, Local 7 / La Barceloneta", "url": "https://es.wallapop.com/item/pack-wingfoil-tabla-foil-y-vela-983518010", "litros_detectados": "[85, 140]", "ala_detectada": "[5.5]", "cumple_criterios": false, "fecha_publicacion": "2026-03-28", "envio": "Envío disponible", "estado": "Disponible", "imagen": "https://cdn.wallapop.com/images/10420/g9/k7/__/c10420p983518010/i4762324071.jpg?pictureSize=W640|https://cdn.wallapop.com/images/10420/g9/k7/__/c10420p983518010/i4762324132.jpg?pictureSize=W640|https://cdn.wallapop.com/images/10420/g9/k7/__/c10420p983518010/i4762324171.jpg?pictureSize=W640"}, {"titulo": "Equipo completo Wingfoil Reeding y Starboard", "precio": "950.0", "ubicacion": "Málaga, 29014", "descripcion": "Se vende equipo completo de Wingfoil, ideal para disfrutar de este deporte.\nse compone de tabla de 112 litros el Foil es 1280 y 75 cm el mástil y las velas son una Reedin de 5’2 metros y otra starboard de 6 metros, se vende todo el conjunto entero.", "url": "https://es.wallapop.com/item/equipo-completo-wingfoil-reeding-y-starboard-1203478263", "litros_detectados": "[112]", "ala_detectada": "[2, 6]", "cumple_criterios": false, "fecha_publicacion": "2026-06-13", "envio": "Envío disponible", "estado": "Disponible", "imagen": "https://cdn.wallapop.com/images/10420/jw/ip/__/c10420p1203478263/i6116951566.jpg?pictureSize=W640|https://cdn.wallapop.com/images/10420/jw/ip/__/c10420p1203478263/i6116951680.jpg?pictureSize=W640|https://cdn.wallapop.com/images/10420/jw/ip/__/c10420p1203478263/i6116951660.jpg?pictureSize=W640|https://cdn.wallapop.com/images/10420/jw/ip/__/c10420p1203478263/i6116951630.jpg?pictureSize=W640|https://cdn.wallapop.com/images/10420/jw/ip/__/c10420p1203478263/i6116951594.jpg?pictureSize=W640|https://cdn.wallapop.com/images/10420/jw/ip/__/c10420p1203478263/i6116951691.jpg?pictureSize=W640|https://cdn.wallapop.com/images/10420/jw/ip/__/c10420p1203478263/i6116951644.jpg?pictureSize=W640|https://cdn.wallapop.com/images/10420/jw/ip/__/c10420p1203478263/i6116951701.jpg?pictureSize=W640|https://cdn.wallapop.com/images/10420/jw/ip/__/c10420p1203478263/i6116951609.jpg?pictureSize=W640|https://cdn.wallapop.com/images/10420/jw/ip/__/c10420p1203478263/i6116951588.jpg?pictureSize=W640"}, {"titulo": "North Seek Prime 6'10 168L | Tabla de Wingfoil", "precio": "1070.0", "ubicacion": "Can Pastilla, 07610", "descripcion": "Tabla para Wingfoil North Seek Prime 6'10 168L\n\nTabla con mucha flotabilidad, ideal para iniciación, o riders muy pesados.\nTiene opción de añadir una quilla para iniciación (antes de empezar a usar el foil) por 50€ más.\nTambién se puede utilizar para SUP downwind.\n\nEn muy buen estado, como se ve en las fotos, puede tener alguna marca de uso.\n\nTiene todo el deck cubierto con gomaeva, lo que la hace mucho más segura y cómoda de navegar/aprender.\n\nMuchos más artículos de kitesurf, wingfoil, efoil, wake, wakefoil, SUP/ Stand Up Paddle, surf, y mucho más en nuestro perfil, envíos a todo el mundo.", "url": "https://es.wallapop.com/item/north-seek-prime-6-10-168l-tabla-de-wingfoil-1067962454", "litros_detectados": "[168]", "ala_detectada": "[]", "cumple_criterios": false, "fecha_publicacion": "2026-03-08", "envio": "Envío disponible", "estado": "Disponible", "imagen": "https://cdn.wallapop.com/images/10420/hn/u5/__/c10420p1067962454/i5233476593.jpg?pictureSize=W640|https://cdn.wallapop.com/images/10420/hn/u5/__/c10420p1067962454/i5233476605.jpg?pictureSize=W640|https://cdn.wallapop.com/images/10420/hn/u5/__/c10420p1067962454/i5233476604.jpg?pictureSize=W640|https://cdn.wallapop.com/images/10420/hn/u5/__/c10420p1067962454/i5233476603.jpg?pictureSize=W640|https://cdn.wallapop.com/images/10420/hn/u5/__/c10420p1067962454/i5233476607.jpg?pictureSize=W640"}, {"titulo": "Pack Duotone Wingfoil", "precio": "2300.0", "ubicacion": "Playa de Gandia, 46730", "descripcion": "🏄🏼‍♂️Pack Duotone para la práctica de wingfoil.\n\n- Tabla de wingfoil entre 80-160 litros, color azul con detalles con pad antideslizante.\n- Foil completo ala entre 900 y 1750 de superficie (ala + fuselaje + estab)\n- WING + leash entre 3,5 y 5,5 metros\n\n🤓Preguntar info y asesoramiento sin compromiso.\n\n🛠️Garantía 6 meses!!", "url": "https://es.wallapop.com/item/pack-duotone-wingfoil-1192958368", "litros_detectados": "[160]", "ala_detectada": "[5.5]", "cumple_criterios": false, "fecha_publicacion": "2026-06-13", "envio": "Envío disponible", "estado": "Disponible", "imagen": "https://cdn.wallapop.com/images/10420/jq/98/__/c10420p1192958368/i6026924753.jpg?pictureSize=W640|https://cdn.wallapop.com/images/10420/jq/98/__/c10420p1192958368/i6026924912.jpg?pictureSize=W640|https://cdn.wallapop.com/images/10420/jq/98/__/c10420p1192958368/i6026924826.jpg?pictureSize=W640"}, {"titulo": "Vela Wingfoil Gong 6m", "precio": "250.0", "ubicacion": "Doña Blanca-Poblado, 11500", "descripcion": "Vela de wingfoil Gong de 6 metros.\n\n- Color azul y verde con detalles en amarillo.\n- Modelo Super Power V2.\nSiempre endulzada, tiene 2  poros uno muy pequeño y el otro algo más grande perfectamente sellados y arreglados, no pierde nada de aire, ideal para principiantes. Se incluye mochila. Tengo más artículos relacionados en mi perfil. Otra ala de 4 m y un foil\n#foil#wing#wingfoil#gong#vela", "url": "https://es.wallapop.com/item/vela-wingfoil-gong-6m-1238875600", "litros_detectados": "[]", "ala_detectada": "[4, 6]", "cumple_criterios": false, "fecha_publicacion": "2026-07-10", "envio": "Envío disponible", "estado": "Disponible", "imagen": "https://cdn.wallapop.com/images/10420/kh/le/__/c10420p1238875600/i6348510306.jpg?pictureSize=W640|https://cdn.wallapop.com/images/10420/kh/le/__/c10420p1238875600/i6348510378.jpg?pictureSize=W640|https://cdn.wallapop.com/images/10420/kh/le/__/c10420p1238875600/i6348510455.jpg?pictureSize=W640|https://cdn.wallapop.com/images/10420/kh/le/__/c10420p1238875600/i6348510720.jpg?pictureSize=W640|https://cdn.wallapop.com/images/10420/kh/le/__/c10420p1238875600/i6348511046.jpg?pictureSize=W640|https://cdn.wallapop.com/images/10420/kh/le/__/c10420p1238875600/i6348511133.jpg?pictureSize=W640|https://cdn.wallapop.com/images/10420/kh/le/__/c10420p1238875600/i6348511205.jpg?pictureSize=W640|https://cdn.wallapop.com/images/10420/kh/le/__/c10420p1238875600/i6348511261.jpg?pictureSize=W640|https://cdn.wallapop.com/images/10420/kh/le/__/c10420p1238875600/i6348511325.jpg?pictureSize=W640|https://cdn.wallapop.com/images/10420/kh/le/__/c10420p1238875600/i6348511394.jpg?pictureSize=W640"}, {"titulo": "Equipo Wingfoil Iniciación Completo para empezar.", "precio": "1400.0", "ubicacion": "Madrid, 28002", "descripcion": "Equipo completo para iniciarse en el wingfoil. Ideal para empezar de cero. Tabla con volumen, fundamental para mantener el equilibrio al principio. \n\nTabla Tabou pocket 137 litros\nWing GA 6.0\nFoil GA 2000", "url": "https://es.wallapop.com/item/equipo-wingfoil-iniciacion-1279425417", "litros_detectados": "[137]", "ala_detectada": "[]", "cumple_criterios": false, "fecha_publicacion": "2026-07-09", "envio": "Envío disponible", "estado": "Disponible", "imagen": "https://cdn.wallapop.com/images/10420/l5/qi/__/c10420p1279425417/i6603075255.jpg?pictureSize=W640|https://cdn.wallapop.com/images/10420/l5/qi/__/c10420p1279425417/i6606875137.jpg?pictureSize=W640|https://cdn.wallapop.com/images/10420/l5/qi/__/c10420p1279425417/i6606875167.jpg?pictureSize=W640|https://cdn.wallapop.com/images/10420/l5/qi/__/c10420p1279425417/i6606875178.jpg?pictureSize=W640|https://cdn.wallapop.com/images/10420/l5/qi/__/c10420p1279425417/i6606875153.jpg?pictureSize=W640|https://cdn.wallapop.com/images/10420/l5/qi/__/c10420p1279425417/i6606875130.jpg?pictureSize=W640|https://cdn.wallapop.com/images/10420/l5/qi/__/c10420p1279425417/i6606875181.jpg?pictureSize=W640|https://cdn.wallapop.com/images/10420/l5/qi/__/c10420p1279425417/i6606875176.jpg?pictureSize=W640|https://cdn.wallapop.com/images/10420/l5/qi/__/c10420p1279425417/i6606875669.jpg?pictureSize=W640|https://cdn.wallapop.com/images/10420/l5/qi/__/c10420p1279425417/i6606875674.jpg?pictureSize=W640"}, {"titulo": "Wing Wingfoil Gong 6 MTS", "precio": "130.0", "ubicacion": "Balos, 35110", "descripcion": "Wing de wingfoil Gong de 6 metros en excelente estado.Poco uso,solo 3 baños.facil manejo,poco peso.\n\n- Color verde y negro.\n- Ventanas transparentes.", "url": "https://es.wallapop.com/item/wing-wingfoil-gong-6-mts-1241491611", "litros_detectados": "[]", "ala_detectada": "[6]", "cumple_criterios": false, "fecha_publicacion": "2026-07-09", "envio": "Envío disponible", "estado": "Disponible", "imagen": "https://cdn.wallapop.com/images/10420/kj/5h/__/c10420p1241491611/i6365270740.jpg?pictureSize=W640|https://cdn.wallapop.com/images/10420/kj/5h/__/c10420p1241491611/i6365270833.jpg?pictureSize=W640|https://cdn.wallapop.com/images/10420/kj/5h/__/c10420p1241491611/i6365270877.jpg?pictureSize=W640|https://cdn.wallapop.com/images/10420/kj/5h/__/c10420p1241491611/i6365270908.jpg?pictureSize=W640"}, {"titulo": "Wingfoil nuevo 2.4*3.3m, 6 m²", "precio": "250.0", "ubicacion": "Madrid, 28041", "descripcion": "Wingfoil EK Koets 6 m², nuevo a estrenar.\n\nMedidas: 240 x 330 cm.\nSin uso, en embalaje original.", "url": "https://es.wallapop.com/item/wingfoil-nuevo-240x330cm-1233301073", "litros_detectados": "[]", "ala_detectada": "[3.3, 6]", "cumple_criterios": false, "fecha_publicacion": "2026-06-17", "envio": "Envío disponible", "estado": "Reservado", "imagen": "https://cdn.wallapop.com/images/10420/ke/9x/__/c10420p1233301073/i6311280177.jpg?pictureSize=W640|https://cdn.wallapop.com/images/10420/ke/9x/__/c10420p1233301073/i6315673343.jpg?pictureSize=W640"}, {"titulo": "Tabla Wingfoil 180L Tabou Zeppelin", "precio": "690.0", "ubicacion": "Chiclana de la Frontera, 11130", "descripcion": "Tabla de wingfoil Zeppelin 180 MTE, ideal para iniciación e intermedio. Diseñada para ofrecer una experiencia de navegación versátil.\n\nConstrucción robusta\nLa construcción ultra resistente soporta el uso intensivo por principiantes\n\nExcelente estabilidad\nInicios rápidos\nEl kick pad y los bordes elevados de la cubierta ofrecen gran control y facilitan despegues rápidos\nPosibilidad de incluir foil naish completo de 2450 en perfecto estado , pack completo 990€\nNingun tique ni reparacion solo marcas de uso.\n- Marca: TABOU.\n- Modelo: ZEPPELIN 2025 /180\n\n- Volumen: 180L\n- Modelo: Zeppelin\n- Marca: Tabou\n- Color: Azul marino, rojo y blanco", "url": "https://es.wallapop.com/item/tabla-wingfoil-180l-tabou-zeppelin-1249698306", "litros_detectados": "[180]", "ala_detectada": "[]", "cumple_criterios": false, "fecha_publicacion": "2026-06-24", "envio": "Envío disponible", "estado": "Disponible", "imagen": "https://cdn.wallapop.com/images/10420/ko/1d/__/c10420p1249698306/i6416902621.jpg?pictureSize=W640|https://cdn.wallapop.com/images/10420/ko/1d/__/c10420p1249698306/i6422524189.jpg?pictureSize=W640|https://cdn.wallapop.com/images/10420/ko/1d/__/c10420p1249698306/i6416902635.jpg?pictureSize=W640|https://cdn.wallapop.com/images/10420/ko/1d/__/c10420p1249698306/i6416902640.jpg?pictureSize=W640|https://cdn.wallapop.com/images/10420/ko/1d/__/c10420p1249698306/i6416906447.jpg?pictureSize=W640|https://cdn.wallapop.com/images/10420/ko/1d/__/c10420p1249698306/i6416906448.jpg?pictureSize=W640"}, {"titulo": "Duotone Wing Unit SLS 6.0", "precio": "1030.0", "ubicacion": "Casas de Porro, 11380", "descripcion": "Ala de wingfoil Duotone Unit SLS de 6.0 metros cuadrados. Diseñada para ofrecer un rendimiento excepcional.\n\nLa vela tiene muy muy poco uso y una reparacion.\n\n- Modelo: Unit SLS\n- Tamaño: 6.0 m²\n- Marca: Duotone\n- Color: Marrón con detalles morados y grises", "url": "https://es.wallapop.com/item/duotone-wing-unit-sls-6-0-1264419004", "litros_detectados": "[]", "ala_detectada": "[6]", "cumple_criterios": false, "fecha_publicacion": "2026-06-13", "envio": "Envío disponible", "estado": "Disponible", "imagen": "https://cdn.wallapop.com/images/10420/kw/sv/__/c10420p1264419004/i6510551483.jpg?pictureSize=W640|https://cdn.wallapop.com/images/10420/kw/sv/__/c10420p1264419004/i6510551533.jpg?pictureSize=W640|https://cdn.wallapop.com/images/10420/kw/sv/__/c10420p1264419004/i6510551577.jpg?pictureSize=W640|https://cdn.wallapop.com/images/10420/kw/sv/__/c10420p1264419004/i6510551666.jpg?pictureSize=W640"}, {"titulo": "Pack Wingfoil - Tabla 41L + Vela 6m + Foil 700", "precio": "785.0", "ubicacion": "Las Rozas de Madrid, 28230", "descripcion": "Equipo completo polivalente, ideal para Wingfoil o Kite Foil.\n\nIncluye:\n\nTabla Compacta 41L: Ligera y reactiva, mínima resistencia al viento y máxima agilidad.\n\nAla North Nova 6m: Con asas rígidas, potente y perfecta para despegar rápido. Incluye mochila original.\n\nFoil Velocidad - Ala 700 cm²: Perfil rápido, planeo fluido y giros limpios. Platina universal. Incluye su mochila de transporte.\n\nUn pack espectacular, muy cuidado y listo para disfrutar en el agua.\n\nwingfoil surf kite nova vela foil duotone f one tabla ala", "url": "https://es.wallapop.com/item/foil-tabla-completa-gong-1272624105", "litros_detectados": "[41]", "ala_detectada": "[6]", "cumple_criterios": false, "fecha_publicacion": "2026-06-28", "envio": "Envío disponible", "estado": "Disponible", "imagen": "https://cdn.wallapop.com/images/10420/l1/or/__/c10420p1272624105/i6584847658.jpg?pictureSize=W640|https://cdn.wallapop.com/images/10420/l1/or/__/c10420p1272624105/i6584870193.jpg?pictureSize=W640|https://cdn.wallapop.com/images/10420/l1/or/__/c10420p1272624105/i6561577811.jpg?pictureSize=W640|https://cdn.wallapop.com/images/10420/l1/or/__/c10420p1272624105/i6561577673.jpg?pictureSize=W640|https://cdn.wallapop.com/images/10420/l1/or/__/c10420p1272624105/i6561577755.jpg?pictureSize=W640|https://cdn.wallapop.com/images/10420/l1/or/__/c10420p1272624105/i6584870142.jpg?pictureSize=W640|https://cdn.wallapop.com/images/10420/l1/or/__/c10420p1272624105/i6584870149.jpg?pictureSize=W640"}, {"titulo": "North Seek Prime 6'4 138L | Tabla de Wingfoil", "precio": "1040.0", "ubicacion": "Can Pastilla, 07610", "descripcion": "Tabla para Wingfoil North Seek Prime 6'4 138L\n\nTabla con mucha flotabilidad, ideal para iniciación, o riders muy pesados.\nTiene opción de añadir una quilla para iniciación (antes de empezar a usar el foil) por 50€ más.\nTambién se puede utilizar para SUP downwind.\n\nEn muy buen estado, como se ve en las fotos, puede tener alguna marca de uso.\n\nTiene todo el deck cubierto con gomaeva, lo que la hace mucho más segura y cómoda de navegar/aprender.\n\nMuchos más artículos de kitesurf, wingfoil, efoil, wake, wakefoil, SUP/ Stand Up Paddle, surf, y mucho más en nuestro perfil, envíos a todo el mundo.", "url": "https://es.wallapop.com/item/north-seek-prime-6-4-138l-tabla-de-wingfoil-1067964161", "litros_detectados": "[138]", "ala_detectada": "[]", "cumple_criterios": false, "fecha_publicacion": "2026-03-08", "envio": "Envío disponible", "estado": "Disponible", "imagen": "https://cdn.wallapop.com/images/10420/hn/u6/__/c10420p1067964161/i5233483541.jpg?pictureSize=W640|https://cdn.wallapop.com/images/10420/hn/u6/__/c10420p1067964161/i5233483550.jpg?pictureSize=W640|https://cdn.wallapop.com/images/10420/hn/u6/__/c10420p1067964161/i5233483552.jpg?pictureSize=W640|https://cdn.wallapop.com/images/10420/hn/u6/__/c10420p1067964161/i5233483551.jpg?pictureSize=W640"}, {"titulo": "TABLA PADEL SURF NSP RÍGIDA 11’x31”x4 1/4” - 190L", "precio": "950.0", "ubicacion": "Castelldefels, 08860", "descripcion": "Tabla de paddle surf NSP rígida, en estupendas condiciones. Nunca se ha usado, sólo expuesta en tienda.\n\n- Marca: NSP\n- Tipo: Rígida\n\nP\n\nSomos PopKite, una tienda especializada en material de Surf, Kite, Windsurf y Wingfoil. Con años de experiencia, asesoramos a riders de todos los niveles y ofrecemos siempre productos de la mejor calidad.\nContáctanos ante cualquier duda, estaremos encantados de ayudarte.", "url": "https://es.wallapop.com/item/tabla-padel-surf-nsp-rigida-11x31x4-1-4-190l-1165674403", "litros_detectados": "[190]", "ala_detectada": "[]", "cumple_criterios": false, "fecha_publicacion": "2026-06-22", "envio": "Envío disponible", "estado": "Disponible", "imagen": "https://cdn.wallapop.com/images/10420/ja/0g/__/c10420p1165674403/i5878242312.jpg?pictureSize=W640|https://cdn.wallapop.com/images/10420/ja/0g/__/c10420p1165674403/i5878242327.jpg?pictureSize=W640|https://cdn.wallapop.com/images/10420/ja/0g/__/c10420p1165674403/i5878242356.jpg?pictureSize=W640|https://cdn.wallapop.com/images/10420/ja/0g/__/c10420p1165674403/i5878242349.jpg?pictureSize=W640|https://cdn.wallapop.com/images/10420/ja/0g/__/c10420p1165674403/i5878242337.jpg?pictureSize=W640"}, {"titulo": "Windsurf foil Goya Airbolt 155 Wingfoil", "precio": "500.0", "ubicacion": "Madrid, 28001", "descripcion": "Rebajado Tabla windsurf foil 155 litros . También vale para Wingfoil caja mixta.\n\nModelo Airbolt Pro full carbón. \nTiene algunos roces pero no traspasaron .\nEstá en Madrid", "url": "https://es.wallapop.com/item/windsurf-foil-goya-airbolt-155-wingfoil-1031486358", "litros_detectados": "[155]", "ala_detectada": "[]", "cumple_criterios": false, "fecha_publicacion": "2026-06-14", "envio": "Envío disponible", "estado": "Disponible", "imagen": "https://cdn.wallapop.com/images/10420/h2/4b/__/c10420p1031486358/i5030636498.jpg?pictureSize=W640|https://cdn.wallapop.com/images/10420/h2/4b/__/c10420p1031486358/i5030636543.jpg?pictureSize=W640|https://cdn.wallapop.com/images/10420/h2/4b/__/c10420p1031486358/i5030636553.jpg?pictureSize=W640|https://cdn.wallapop.com/images/10420/h2/4b/__/c10420p1031486358/i5030636577.jpg?pictureSize=W640|https://cdn.wallapop.com/images/10420/h2/4b/__/c10420p1031486358/i5030636589.jpg?pictureSize=W640|https://cdn.wallapop.com/images/10420/h2/4b/__/c10420p1031486358/i5030636600.jpg?pictureSize=W640|https://cdn.wallapop.com/images/10420/h2/4b/__/c10420p1031486358/i5030636610.jpg?pictureSize=W640|https://cdn.wallapop.com/images/10420/h2/4b/__/c10420p1031486358/i5030636620.jpg?pictureSize=W640"}, {"titulo": "Ala cometa Wingfoil Duotone 6m", "precio": "450.0", "ubicacion": "Hinojedo, 39350", "descripcion": "Wingfoil Duotone 6m \n2024 Para vientos suaves, o aprendizaje. \nEleveight # Gaastra # Gong # Duotone # F-one", "url": "https://es.wallapop.com/item/wingfoil-duotone-6m-1270308880", "litros_detectados": "[]", "ala_detectada": "[6]", "cumple_criterios": false, "fecha_publicacion": "2026-07-02", "envio": "Envío disponible", "estado": "Disponible", "imagen": "https://cdn.wallapop.com/images/10420/l0/b4/__/c10420p1270308880/i6547253443.jpg?pictureSize=W640|https://cdn.wallapop.com/images/10420/l0/b4/__/c10420p1270308880/i6547253456.jpg?pictureSize=W640|https://cdn.wallapop.com/images/10420/l0/b4/__/c10420p1270308880/i6547253462.jpg?pictureSize=W640|https://cdn.wallapop.com/images/10420/l0/b4/__/c10420p1270308880/i6547253449.jpg?pictureSize=W640"}, {"titulo": "Tabla Wingfoil SBT Ave Fenix", "precio": "250.0", "ubicacion": "Zarautz, 20800", "descripcion": "Tabla de wingfoil SBT Ave Fenix recien reparada y lista para seguir volando! \nPerfecta para iniciarse en el mundo del foil. \nMedidas \n180x93x15\n190litros\nEntrega en mano!", "url": "https://es.wallapop.com/item/tabla-wingfoil-sbt-ave-fenix-1277547479", "litros_detectados": "[190]", "ala_detectada": "[]", "cumple_criterios": false, "fecha_publicacion": "2026-07-09", "envio": "Envío disponible", "estado": "Disponible", "imagen": "https://cdn.wallapop.com/images/10420/l4/m9/__/c10420p1277547479/i6589539830.jpg?pictureSize=W640|https://cdn.wallapop.com/images/10420/l4/m9/__/c10420p1277547479/i6589539852.jpg?pictureSize=W640|https://cdn.wallapop.com/images/10420/l4/m9/__/c10420p1277547479/i6589539952.jpg?pictureSize=W640|https://cdn.wallapop.com/images/10420/l4/m9/__/c10420p1277547479/i6589539974.jpg?pictureSize=W640|https://cdn.wallapop.com/images/10420/l4/m9/__/c10420p1277547479/i6589539979.jpg?pictureSize=W640|https://cdn.wallapop.com/images/10420/l4/m9/__/c10420p1277547479/i6589539963.jpg?pictureSize=W640|https://cdn.wallapop.com/images/10420/l4/m9/__/c10420p1277547479/i6589539940.jpg?pictureSize=W640"}, {"titulo": "Ala Wingfoil North Nova 6.0", "precio": "200.0", "ubicacion": "Sevilla, 41005", "descripcion": "Ala de wingfoil North Nova de 6 metros. Diseñada para ofrecer un rendimiento excepcional.\n\n- Color negro con detalles en verde turquesa.\n- Ventanas transparentes para visibilidad.\n- Logotipo North en el centro.", "url": "https://es.wallapop.com/item/ala-wingfoil-north-nova-6-0-1269258105", "litros_detectados": "[]", "ala_detectada": "[6]", "cumple_criterios": false, "fecha_publicacion": "2026-07-10", "envio": "Envío disponible", "estado": "Disponible", "imagen": "https://cdn.wallapop.com/images/10420/kz/ol/__/c10420p1269258105/i6541130707.jpg?pictureSize=W640|https://cdn.wallapop.com/images/10420/kz/ol/__/c10420p1269258105/i6541130729.jpg?pictureSize=W640|https://cdn.wallapop.com/images/10420/kz/ol/__/c10420p1269258105/i6541130831.jpg?pictureSize=W640|https://cdn.wallapop.com/images/10420/kz/ol/__/c10420p1269258105/i6541130814.jpg?pictureSize=W640|https://cdn.wallapop.com/images/10420/kz/ol/__/c10420p1269258105/i6541130788.jpg?pictureSize=W640|https://cdn.wallapop.com/images/10420/kz/ol/__/c10420p1269258105/i6541130803.jpg?pictureSize=W640|https://cdn.wallapop.com/images/10420/kz/ol/__/c10420p1269258105/i6541130754.jpg?pictureSize=W640|https://cdn.wallapop.com/images/10420/kz/ol/__/c10420p1269258105/i6541130743.jpg?pictureSize=W640|https://cdn.wallapop.com/images/10420/kz/ol/__/c10420p1269258105/i6541130769.jpg?pictureSize=W640"}, {"titulo": "Pack Wingfoil JP + Neilpryde + Takoon", "precio": "1999.0", "ubicacion": "Algeciras, 11202", "descripcion": "Pack completo de Wingfoil con tabla JP, foil Takoon y wing Neilpryde.\nIncluye regalo de un foil Dakine 1300 o tabla Wingfoil hinchable de 135L\n\n- Tabla disponible en 88L, 99L, 111L, 122L, 133L, 144L.\n- Foil disponible en 1700, 1450, 1250.\n- Wing Neilpryde disponible en  3.5, 5, 5.5 , 6\n- Precio especial del pack: 1.999€.\nPortes incluidos", "url": "https://es.wallapop.com/item/pack-wingfoil-jp---neilpryde---takoon-1271603523", "litros_detectados": "[88, 99, 111, 122, 133, 135, 144]", "ala_detectada": "[]", "cumple_criterios": false, "fecha_publicacion": "2026-06-11", "envio": "Envío disponible", "estado": "Disponible", "imagen": "https://cdn.wallapop.com/images/10420/l1/2v/__/c10420p1271603523/i6555678096.jpg?pictureSize=W640|https://cdn.wallapop.com/images/10420/l1/2v/__/c10420p1271603523/i6555678106.jpg?pictureSize=W640|https://cdn.wallapop.com/images/10420/l1/2v/__/c10420p1271603523/i6555678110.jpg?pictureSize=W640|https://cdn.wallapop.com/images/10420/l1/2v/__/c10420p1271603523/i6555678117.jpg?pictureSize=W640|https://cdn.wallapop.com/images/10420/l1/2v/__/c10420p1271603523/i6555678120.jpg?pictureSize=W640|https://cdn.wallapop.com/images/10420/l1/2v/__/c10420p1271603523/i6555678124.jpg?pictureSize=W640"}, {"titulo": "Wingfoil North Seek Prime 138L", "precio": "950.0", "ubicacion": "Can Pastilla, 07610", "descripcion": "Tabla de wingfoil North Seek Prime 138L en excelentes condiciones.  Es una tabla ligera y fácil de usar, ideal para principiantes y riders intermedios. Así cómo para riders más pesados.\n\nAdicionalmente también tenemos el adaptador para añadir una quilla en lugar de foil si fuese necesario (no incluido en el precio)\n\n- Modelo: North Seek Prime\n- Volumen: 138L\n- Diseño elegante y moderno.", "url": "https://es.wallapop.com/item/wingfoil-north-seek-prime-138l-1156134720", "litros_detectados": "[138]", "ala_detectada": "[]", "cumple_criterios": false, "fecha_publicacion": "2026-03-08", "envio": "Envío disponible", "estado": "Disponible", "imagen": "https://cdn.wallapop.com/images/10420/j4/bz/__/c10420p1156134720/i5819693056.jpg?pictureSize=W640|https://cdn.wallapop.com/images/10420/j4/bz/__/c10420p1156134720/i5819693069.jpg?pictureSize=W640|https://cdn.wallapop.com/images/10420/j4/bz/__/c10420p1156134720/i5819693072.jpg?pictureSize=W640|https://cdn.wallapop.com/images/10420/j4/bz/__/c10420p1156134720/i5819693073.jpg?pictureSize=W640"}, {"titulo": "Reedin Purenatural 6.0m 2025 Wing", "precio": "718.0", "ubicacion": "Tarifa, 11380", "descripcion": "Ala de wingfoil Reedin Purenatural de 6.0 metros, modelo 2025. Color morado con logo blanco.\n\n- Tamaño: 6.0m\n- Modelo: Purenatural\n- Año: 2025\n- Color: Morado\n\n\n[duotone, f-one, north, cabrinha, core, armstrong, reedin, axis, sabfoil, naish, takoon, gong, slingshot, starboard, ozone, ensis, kt, rrd, vayu, fanatic, appletree, unifoil, gofoil, cloud ix, ppc, freedom foil, indiana, eleveight, gaastra, code, unit, slick, strike, nova, mantis, xps, d/lab, aluula, carbon, hm]", "url": "https://es.wallapop.com/item/reedin-purenatural-6-0m-2025-wing-1269956195", "litros_detectados": "[]", "ala_detectada": "[6]", "cumple_criterios": false, "fecha_publicacion": "2026-06-06", "envio": "Envío disponible", "estado": "Disponible", "imagen": "https://cdn.wallapop.com/images/10420/l0/3k/__/c10420p1269956195/i6545465783.jpg?pictureSize=W640|https://cdn.wallapop.com/images/10420/l0/3k/__/c10420p1269956195/i6545465798.jpg?pictureSize=W640"}, {"titulo": "Wing Zaoli 6m", "precio": "340.0", "ubicacion": "Berben, 11500", "descripcion": "Ala de wingfoil Zaoli de 6 metros.\nWing de alto performance, con alta ingeniería y construida por una de las mejores velerías Zaoli Sails. \nCon uso pero sigue funcionando perfectamente, entrega de potencia muy lineal. \nTiene reparaciones en el paño realizadas con cinta de spi.\n\ninvento/ foil/hydrofoil/wingfoil/kitefoil/duotone/onada/olas/fanatic/gong/slingshot/zaoli/ion/north/flysurfer/wingfoil/ozone/fone/cabrinha/reedin/surf/downwind/lightwind/axis/takoon/dakine/rrd/billabong/tarifa/", "url": "https://es.wallapop.com/item/wing-zaoli-6m-1275850973", "litros_detectados": "[]", "ala_detectada": "[6]", "cumple_criterios": false, "fecha_publicacion": "2026-07-11", "envio": "Envío disponible", "estado": "Disponible", "imagen": "https://cdn.wallapop.com/images/10420/l3/lw/__/c10420p1275850973/i6579885045.jpg?pictureSize=W640|https://cdn.wallapop.com/images/10420/l3/lw/__/c10420p1275850973/i6579885077.jpg?pictureSize=W640|https://cdn.wallapop.com/images/10420/l3/lw/__/c10420p1275850973/i6579885093.jpg?pictureSize=W640|https://cdn.wallapop.com/images/10420/l3/lw/__/c10420p1275850973/i6579885060.jpg?pictureSize=W640|https://cdn.wallapop.com/images/10420/l3/lw/__/c10420p1275850973/i6579885064.jpg?pictureSize=W640|https://cdn.wallapop.com/images/10420/l3/lw/__/c10420p1275850973/i6579885097.jpg?pictureSize=W640|https://cdn.wallapop.com/images/10420/l3/lw/__/c10420p1275850973/i6579885072.jpg?pictureSize=W640|https://cdn.wallapop.com/images/10420/l3/lw/__/c10420p1275850973/i6579885068.jpg?pictureSize=W640|https://cdn.wallapop.com/images/10420/l3/lw/__/c10420p1275850973/i6579885082.jpg?pictureSize=W640|https://cdn.wallapop.com/images/10420/l3/lw/__/c10420p1275850973/i6579885087.jpg?pictureSize=W640"}, {"titulo": "Pack Wingfoil Completo", "precio": "950.0", "ubicacion": "El Puerto de Santa María, 11500", "descripcion": "Pack de wingfoil listo para usar. Incluye tabla y foil.\n\n- Tabla con diseño blanco y negro.\n- Foil con mástil y alas. Mastil 90cm ala 1100 y estabilizador de 210\n-vela cabrinha 6 metros", "url": "https://es.wallapop.com/item/pack-wingfoil-completo-1230908018", "litros_detectados": "[]", "ala_detectada": "[6]", "cumple_criterios": false, "fecha_publicacion": "2026-06-29", "envio": "Envío disponible", "estado": "Disponible", "imagen": "https://cdn.wallapop.com/images/10420/kc/um/__/c10420p1230908018/i6295270483.jpg?pictureSize=W640|https://cdn.wallapop.com/images/10420/kc/um/__/c10420p1230908018/i6295270519.jpg?pictureSize=W640|https://cdn.wallapop.com/images/10420/kc/um/__/c10420p1230908018/i6295270512.jpg?pictureSize=W640|https://cdn.wallapop.com/images/10420/kc/um/__/c10420p1230908018/i6295270492.jpg?pictureSize=W640|https://cdn.wallapop.com/images/10420/kc/um/__/c10420p1230908018/i6295270523.jpg?pictureSize=W640|https://cdn.wallapop.com/images/10420/kc/um/__/c10420p1230908018/i6295270527.jpg?pictureSize=W640|https://cdn.wallapop.com/images/10420/kc/um/__/c10420p1230908018/i6295270531.jpg?pictureSize=W640|https://cdn.wallapop.com/images/10420/kc/um/__/c10420p1230908018/i6295270507.jpg?pictureSize=W640|https://cdn.wallapop.com/images/10420/kc/um/__/c10420p1230908018/i6295270502.jpg?pictureSize=W640"}, {"titulo": "Pack Wingfoil Iniciación Completo", "precio": "2250.0", "ubicacion": "Torrent, 46900", "descripcion": "Pack completo para iniciarse en el wingfoil.\n\n- Tabla de wingfoil Fanatic Sky Wing. 125l\n- Foil Naish. (Jet 2000 y mastil de 75cm)\n- Bolsas de transporte de todo.\n- vela de 4m duotone Slick \n- vela de 6m duotone Slick \n- leash de cintura en tabla y leash de muñeca en vela.\n- botavara de carbono.\nVenta en Cullera.\nSe prioriza la venta conjunta para no quedarse artículos sueltos.", "url": "https://es.wallapop.com/item/pack-wingfoil-iniciacion-completo-1251257450", "litros_detectados": "[125]", "ala_detectada": "[4, 6]", "cumple_criterios": false, "fecha_publicacion": "2026-07-09", "envio": "Envío disponible", "estado": "Disponible", "imagen": "https://cdn.wallapop.com/images/10420/ko/ys/__/c10420p1251257450/i6428203548.jpg?pictureSize=W640|https://cdn.wallapop.com/images/10420/ko/ys/__/c10420p1251257450/i6428203633.jpg?pictureSize=W640|https://cdn.wallapop.com/images/10420/ko/ys/__/c10420p1251257450/i6428203687.jpg?pictureSize=W640|https://cdn.wallapop.com/images/10420/ko/ys/__/c10420p1251257450/i6428203559.jpg?pictureSize=W640|https://cdn.wallapop.com/images/10420/ko/ys/__/c10420p1251257450/i6428203593.jpg?pictureSize=W640|https://cdn.wallapop.com/images/10420/ko/ys/__/c10420p1251257450/i6428203567.jpg?pictureSize=W640|https://cdn.wallapop.com/images/10420/ko/ys/__/c10420p1251257450/i6428203610.jpg?pictureSize=W640|https://cdn.wallapop.com/images/10420/ko/ys/__/c10420p1251257450/i6428203618.jpg?pictureSize=W640|https://cdn.wallapop.com/images/10420/ko/ys/__/c10420p1251257450/i6428203679.jpg?pictureSize=W640|https://cdn.wallapop.com/images/10420/ko/ys/__/c10420p1251257450/i6428203665.jpg?pictureSize=W640"}, {"titulo": "Pack Wingfoil - Tabla 110L + Vela 6m + Foil 1800", "precio": "815.0", "ubicacion": "Las Rozas de Madrid, 28230", "descripcion": "Pack completo de Wingfoil listo para navegar, ideal para iniciación y progresión. Todo el material está impecable y es compatible entre sí.\n\nIncluye:\n\nTabla Hinchable GONG Hipe First 110L (5'5\"): Súper estable, con placa rígida de carbono. Con mochila.\n\nAla North Nova 6m: Vela premium, compacta, potente para vientos flojos/térmicos y con asas ergonómicas. Con mochila.\n\nFoil Carbono Kohala Blaster 1800: Ala gigante para despegar sin esfuerzo, mástil y platina universal (US Box). Con mochila.\n\nAhórrate mareos buscando piezas sueltas. Comprar y al agua.\n\nwingfoil surf kite nova vela foil duotone f one tabla ala", "url": "https://es.wallapop.com/item/equipo-completo-wingfoil-gong-north-kohala-1274518016", "litros_detectados": "[110]", "ala_detectada": "[6]", "cumple_criterios": false, "fecha_publicacion": "2026-06-28", "envio": "Envío disponible", "estado": "Disponible", "imagen": "https://cdn.wallapop.com/images/10420/l2/tc/__/c10420p1274518016/i6572221708.jpg?pictureSize=W640|https://cdn.wallapop.com/images/10420/l2/tc/__/c10420p1274518016/i6572221725.jpg?pictureSize=W640|https://cdn.wallapop.com/images/10420/l2/tc/__/c10420p1274518016/i6572221771.jpg?pictureSize=W640|https://cdn.wallapop.com/images/10420/l2/tc/__/c10420p1274518016/i6572221746.jpg?pictureSize=W640|https://cdn.wallapop.com/images/10420/l2/tc/__/c10420p1274518016/i6572221745.jpg?pictureSize=W640|https://cdn.wallapop.com/images/10420/l2/tc/__/c10420p1274518016/i6572221736.jpg?pictureSize=W640|https://cdn.wallapop.com/images/10420/l2/tc/__/c10420p1274518016/i6584846923.jpg?pictureSize=W640|https://cdn.wallapop.com/images/10420/l2/tc/__/c10420p1274518016/i6584846989.jpg?pictureSize=W640"}, {"titulo": "Wing Gong Pulse 6m", "precio": "150.0", "ubicacion": "Paterna, 46980", "descripcion": "Wing de wingfoil Gong Pulse de 6 m2.\n\n- Color verde lima.\n- año 2022", "url": "https://es.wallapop.com/item/wing-gong-pulse-6m-1233753964", "litros_detectados": "[]", "ala_detectada": "[6]", "cumple_criterios": false, "fecha_publicacion": "2026-05-16", "envio": "Envío disponible", "estado": "Disponible", "imagen": "https://cdn.wallapop.com/images/10420/ke/jm/__/c10420p1233753964/i6314038183.jpg?pictureSize=W640"}, {"titulo": "Tabla Wing Reedin S-Feather 188L Principiente", "precio": "699.0", "ubicacion": "Tarifa, 11380", "descripcion": "Tabla de wingfoil Reedin S-Feather de 188 litros, ideal para iniciación / gran tamaño\n\n- Diseño moderno con franjas de color.\n- Número de serie 188 visible.\n- Logo de la marca en rojo.\n\n\n[duotone, f-one, north, cabrinha, core, armstrong, reedin, axis, sabfoil, naish, takoon, gong, slingshot, starboard, ozone, ensis, kt, rrd, vayu, fanatic, appletree, unifoil, gofoil, cloud ix, ppc, freedom foil, indiana, eleveight, gaastra, code, unit, slick, strike, nova, mantis, xps, d/lab, aluula, carbon, hm]", "url": "https://es.wallapop.com/item/tabla-wing-reedin-s-feather-188l-principiente-1227649685", "litros_detectados": "[188]", "ala_detectada": "[]", "cumple_criterios": false, "fecha_publicacion": "2026-06-12", "envio": "Envío disponible", "estado": "Disponible", "imagen": "https://cdn.wallapop.com/images/10420/ka/ws/__/c10420p1227649685/i6273741472.jpg?pictureSize=W640|https://cdn.wallapop.com/images/10420/ka/ws/__/c10420p1227649685/i6273741482.jpg?pictureSize=W640"}, {"titulo": "Wingfoil Takoon 4, 5 y 6 m 150 cada una", "precio": "450.0", "ubicacion": "Sant Antoni de Portmany, 07820", "descripcion": "Vendo tres velas de wingfoil Takoon, Están en muy buen estado y listas para usar. \n\n- Incluye tres velas de wingfoil.\n- Modelo Takoon.\n- Medidas: 4m, 5m y 6 m\n- En perfecto estado.", "url": "https://es.wallapop.com/item/wingfoil-takoon-4-y-5m-350-cada-una-1155380377", "litros_detectados": "[]", "ala_detectada": "[4, 5, 6]", "cumple_criterios": false, "fecha_publicacion": "2026-05-25", "envio": "Envío disponible", "estado": "Disponible", "imagen": "https://cdn.wallapop.com/images/10420/j3/vt/__/c10420p1155380377/i5814654346.jpg?pictureSize=W640|https://cdn.wallapop.com/images/10420/j3/vt/__/c10420p1155380377/i5814654405.jpg?pictureSize=W640|https://cdn.wallapop.com/images/10420/j3/vt/__/c10420p1155380377/i5814654389.jpg?pictureSize=W640"}, {"titulo": "Tabla Gong SUP Foil/Wingfoil Híbrida 8.6 33 ancho", "precio": "550.0", "ubicacion": "El Prat de Llobregat, 08820", "descripcion": "Tabla híbrida Gong para SUP foil, wingfoil y paddle surf. Diseñada para versatilidad en el agua. 155 l\n\n- Diseño moderno con áreas de agarre texturizadas.\n- Combinación de colores gris, azul y verde lima.\n- Incluye leash y quillas.", "url": "https://es.wallapop.com/item/tabla-gong-sup-foil-wingfoil-hibrida-8-6-1280061093", "litros_detectados": "[155]", "ala_detectada": "[]", "cumple_criterios": false, "fecha_publicacion": "2026-07-11", "envio": "Envío disponible", "estado": "Disponible", "imagen": "https://cdn.wallapop.com/images/10420/l6/45/__/c10420p1280061093/i6607160404.jpg?pictureSize=W640|https://cdn.wallapop.com/images/10420/l6/45/__/c10420p1280061093/i6607160411.jpg?pictureSize=W640|https://cdn.wallapop.com/images/10420/l6/45/__/c10420p1280061093/i6607160423.jpg?pictureSize=W640|https://cdn.wallapop.com/images/10420/l6/45/__/c10420p1280061093/i6607160428.jpg?pictureSize=W640|https://cdn.wallapop.com/images/10420/l6/45/__/c10420p1280061093/i6607160435.jpg?pictureSize=W640"}, {"titulo": "Wing de Wingfoil KT Wing Air 6.0 - Color Oliva", "precio": "490.0", "ubicacion": "Alcúdia, 07400", "descripcion": "Wing Air de KT Foiling en color oliva exclusivo, tamaño 6.0m2. Perfecto para todo tipo de condiciones.\n\nINCLUYE: Leash de muñeca + Bolsa de transporte\nNO INCLUYE: Bomba de inflado\n\nESTADO: 7/10 - Buen estado general, completamente funcional\n\nCARACTERÍSTICAS:\nDiseñado por Jason Diffin (campeón mundial). Construcción ultraligera con materiales Dimension Polyant y refuerzos de kevlar. Excelente estabilidad, potencia en rango bajo y fácil de manejar en olas.\n\nEnvío a toda España\nVendedor con experiencia\nRespuesta rápida - Envío inmediato\n\nSolo 1 unidad disponible!", "url": "https://es.wallapop.com/item/wing-de-wingfoil-kt-wing-air-6-0-color-oliva-1209034554", "litros_detectados": "[]", "ala_detectada": "[6]", "cumple_criterios": false, "fecha_publicacion": "2026-06-26", "envio": "Envío disponible", "estado": "Disponible", "imagen": "https://cdn.wallapop.com/images/10420/jz/tt/__/c10420p1209034554/i6156630028.jpg?pictureSize=W640|https://cdn.wallapop.com/images/10420/jz/tt/__/c10420p1209034554/i6156630026.jpg?pictureSize=W640|https://cdn.wallapop.com/images/10420/jz/tt/__/c10420p1209034554/i6156630047.jpg?pictureSize=W640|https://cdn.wallapop.com/images/10420/jz/tt/__/c10420p1209034554/i6155227973.jpg?pictureSize=W640|https://cdn.wallapop.com/images/10420/jz/tt/__/c10420p1209034554/i6155227961.jpg?pictureSize=W640|https://cdn.wallapop.com/images/10420/jz/tt/__/c10420p1209034554/i6155227972.jpg?pictureSize=W640|https://cdn.wallapop.com/images/10420/jz/tt/__/c10420p1209034554/i6155227978.jpg?pictureSize=W640|https://cdn.wallapop.com/images/10420/jz/tt/__/c10420p1209034554/i6155227979.jpg?pictureSize=W640"}, {"titulo": "Tabla WingFoil RRD 160L BIG BELUGA", "precio": "980.0", "ubicacion": "Málaga, 29007", "descripcion": "Tabla de WingFoil RRD BIG BELUGA de 160 litros.\n\n- Diseño White Line Y31\n- Incluye footstraps\n\n\n**NO INCLUYE FOIL", "url": "https://es.wallapop.com/item/tabla-wingfoil-rrd-160l-big-beluga-1280862331", "litros_detectados": "[160]", "ala_detectada": "[]", "cumple_criterios": false, "fecha_publicacion": "2026-07-11", "envio": "Envío disponible", "estado": "Disponible", "imagen": "https://cdn.wallapop.com/images/10420/l6/lb/__/c10420p1280862331/i6612282729.jpg?pictureSize=W640|https://cdn.wallapop.com/images/10420/l6/lb/__/c10420p1280862331/i6612282749.jpg?pictureSize=W640|https://cdn.wallapop.com/images/10420/l6/lb/__/c10420p1280862331/i6612282743.jpg?pictureSize=W640|https://cdn.wallapop.com/images/10420/l6/lb/__/c10420p1280862331/i6612282761.jpg?pictureSize=W640"}, {"titulo": "Ala Wing Foil Eleveight 6m", "precio": "300.0", "ubicacion": "Reus, 43201", "descripcion": "Ala de wing foil Eleveight de 6 metros. Diseñada para ofrecer un rendimiento óptimo.\n\n- Color principal rojo y gris.\n- Ventanas transparentes para visibilidad.\nTiene una reparación realizada por Virus Kite, un excelente profesional reparando Kites y Wings. \n-Ideal para iniciación... Cuando necesitas un poco más de wing para poder empezar a volar. Muy cuidada. Siempre aclarada con agua dulce y dejada secar antes de guardarla. Se puede ver sin problema en Miami Playa.", "url": "https://es.wallapop.com/item/ala-wing-foil-eleveight-6m-1277722619", "litros_detectados": "[]", "ala_detectada": "[6]", "cumple_criterios": false, "fecha_publicacion": "2026-07-11", "envio": "Envío disponible", "estado": "Disponible", "imagen": "https://cdn.wallapop.com/images/10420/l4/q1/__/c10420p1277722619/i6590592951.jpg?pictureSize=W640|https://cdn.wallapop.com/images/10420/l4/q1/__/c10420p1277722619/i6590592955.jpg?pictureSize=W640|https://cdn.wallapop.com/images/10420/l4/q1/__/c10420p1277722619/i6590592956.jpg?pictureSize=W640|https://cdn.wallapop.com/images/10420/l4/q1/__/c10420p1277722619/i6590592961.jpg?pictureSize=W640|https://cdn.wallapop.com/images/10420/l4/q1/__/c10420p1277722619/i6590592963.jpg?pictureSize=W640|https://cdn.wallapop.com/images/10420/l4/q1/__/c10420p1277722619/i6590592968.jpg?pictureSize=W640|https://cdn.wallapop.com/images/10420/l4/q1/__/c10420p1277722619/i6590592970.jpg?pictureSize=W640|https://cdn.wallapop.com/images/10420/l4/q1/__/c10420p1277722619/i6590592979.jpg?pictureSize=W640|https://cdn.wallapop.com/images/10420/l4/q1/__/c10420p1277722619/i6590592987.jpg?pictureSize=W640|https://cdn.wallapop.com/images/10420/l4/q1/__/c10420p1277722619/i6590593001.jpg?pictureSize=W640"}, {"titulo": "AIR WING RRD 6.0", "precio": "599.0", "ubicacion": "Sant Pere Pescador, 17470", "descripcion": "Ala AIR WING RRD de 6.0 m\n- Perfecto para iniciar-se y evolucionar en el wingfoil!\n- Handles rigidos para mayor control\nSe hacen envíos. Más información por WhatsApp en el (+34) 621014083.", "url": "https://es.wallapop.com/item/air-wing-rrd-6-0-1280839013", "litros_detectados": "[]", "ala_detectada": "[6]", "cumple_criterios": false, "fecha_publicacion": "2026-07-11", "envio": "Envío disponible", "estado": "Disponible", "imagen": "https://cdn.wallapop.com/images/10420/l6/kt/__/c10420p1280839013/i6612181891.jpg?pictureSize=W640|https://cdn.wallapop.com/images/10420/l6/kt/__/c10420p1280839013/i6612181917.jpg?pictureSize=W640|https://cdn.wallapop.com/images/10420/l6/kt/__/c10420p1280839013/i6612181931.jpg?pictureSize=W640|https://cdn.wallapop.com/images/10420/l6/kt/__/c10420p1280839013/i6612181945.jpg?pictureSize=W640|https://cdn.wallapop.com/images/10420/l6/kt/__/c10420p1280839013/i6612181959.jpg?pictureSize=W640"}, {"titulo": "Tabla de wing foil hinchable 150L", "precio": "299.0", "ubicacion": "Sevilla, 41010", "descripcion": "Un solo uso, prácticamente nueva a estrenar\nHinchable perfecta para iniciación e intermedio\n150L\nTambién se vende wing Takoon v2 de 7 metros 299€\n\n#wingfoil #hydrofoil #foil #vela #surf #tabla", "url": "https://es.wallapop.com/item/tabla-de-wing-foil-hinchable-150l-1277081407", "litros_detectados": "[150]", "ala_detectada": "[7]", "cumple_criterios": false, "fecha_publicacion": "2026-07-11", "envio": "Envío disponible", "estado": "Disponible", "imagen": "https://cdn.wallapop.com/images/10420/l4/ca/__/c10420p1277081407/i6604679136.jpg?pictureSize=W640|https://cdn.wallapop.com/images/10420/l4/ca/__/c10420p1277081407/i6604679158.jpg?pictureSize=W640|https://cdn.wallapop.com/images/10420/l4/ca/__/c10420p1277081407/i6604679150.jpg?pictureSize=W640|https://cdn.wallapop.com/images/10420/l4/ca/__/c10420p1277081407/i6604679154.jpg?pictureSize=W640"}];
+
+        // Render Stats
+        document.getElementById('stat-total').innerText = listings.length;
+        document.getElementById('stat-available').innerText = listings.filter(x => x.estado === 'Disponible').length;
+        document.getElementById('stat-shippable').innerText = listings.filter(x => x.envio === 'Envío disponible').length;
+        document.getElementById('update-timestamp').innerText = "Actualizado: " + new Date().toLocaleTimeString();
+
+        // Cargar listas de Favoritos y Descartes desde LocalStorage
+        let favorites = JSON.parse(localStorage.getItem('wallapop_favorites') || '[]');
+        let dismissed = JSON.parse(localStorage.getItem('wallapop_dismissed') || '[]');
+
+        let currentFilter = 'all';
+        let currentCategory = 'all';
+        let searchQuery = '';
+        let currentSort = 'default';
+
+        window.toggleFav = function(url, event) {
+            if (event) event.stopPropagation();
+            const idx = favorites.indexOf(url);
+            if (idx > -1) {
+                favorites.splice(idx, 1);
+            } else {
+                favorites.push(url);
+            }
+            localStorage.setItem('wallapop_favorites', JSON.stringify(favorites));
+            renderListings();
+        };
+
+        window.dismissItem = function(url, event) {
+            if (event) event.stopPropagation();
+            if (!dismissed.includes(url)) {
+                dismissed.push(url);
+                localStorage.setItem('wallapop_dismissed', JSON.stringify(dismissed));
+            }
+            const favIdx = favorites.indexOf(url);
+            if (favIdx > -1) {
+                favorites.splice(favIdx, 1);
+                localStorage.setItem('wallapop_favorites', JSON.stringify(favorites));
+            }
+            renderListings();
+        };
+
+        window.restoreItem = function(url, event) {
+            if (event) event.stopPropagation();
+            const idx = dismissed.indexOf(url);
+            if (idx > -1) {
+                dismissed.splice(idx, 1);
+                localStorage.setItem('wallapop_dismissed', JSON.stringify(dismissed));
+            }
+            renderListings();
+        };
+
+        window.resetFilters = function() {
+            document.getElementById('search-input').value = '';
+            document.getElementById('liters-min').value = '';
+            document.getElementById('liters-max').value = '';
+            document.getElementById('wing-min').value = '';
+            document.getElementById('wing-max').value = '';
+            document.getElementById('price-min-filter').value = '';
+            document.getElementById('price-max-filter').value = '';
+            searchQuery = '';
+            renderListings();
+        };
+
+        window.toggleFilters = function() {
+            const container = document.getElementById('filters-container');
+            const btn = document.getElementById('toggle-filters-btn');
+            if (container.style.maxHeight === '0px') {
+                container.style.maxHeight = '1200px';
+                container.style.opacity = '1';
+                btn.innerText = 'Ocultar Filtros';
+            } else {
+                container.style.maxHeight = '0px';
+                container.style.opacity = '0';
+                btn.innerText = 'Mostrar Filtros';
+            }
+        };
+        
+        // Helper para extraer los números de los campos stringificados como "[74.5]" o "[]"
+        function parseDetectedValues(str) {
+            if (!str || str === '[]') return [];
+            try {
+                // Si viene como JSON array literal
+                const parsed = JSON.parse(str.replace(/'/g, '"'));
+                return Array.isArray(parsed) ? parsed.map(Number) : [];
+            } catch(e) {
+                // Fallback manual si no es JSON válido
+                const matches = str.match(/\d+(?:\.\d+)?/g);
+                return matches ? matches.map(Number) : [];
+            }
+        }
+
+        // Clasificador inteligente de productos en base a su título y descripción (sistema de puntuación)
+        function getListingType(item) {
+            const title = (item.titulo || "").toLowerCase();
+            const desc = (item.descripcion || "").toLowerCase();
+            const text = title + " " + desc;
+            
+            let boardScore = 0;
+            let wingScore = 0;
+            let foilScore = 0;
+            
+            // 1. Detecciones físicas del scraper (peso muy alto)
+            const hasLiters = parseDetectedValues(item.litros_detectados).length > 0;
+            const hasWing = parseDetectedValues(item.ala_detectada).length > 0;
+            if (hasLiters) boardScore += 10;
+            if (hasWing) wingScore += 10;
+            
+            // 2. Coincidencias en el título (peso alto)
+            // Palabras de tabla
+            if (title.includes("tabla") || title.includes("board") || title.includes("foilboard")) boardScore += 8;
+            if (title.includes("litros") || title.includes(" lts")) boardScore += 5;
+            
+            // Palabras de wing
+            if (title.includes("wing") && !title.includes("wingfoil")) wingScore += 8;
+            if (title.includes("ala") && !title.includes("ala de foil")) wingScore += 8;
+            if (title.includes("vela")) wingScore += 6;
+            
+            // Palabras de foil
+            if (title.includes("foil") && !title.includes("wingfoil") && !title.includes("tabla")) foilScore += 8;
+            if (title.includes("hydrofoil")) foilScore += 8;
+            if (title.includes("mastil") || title.includes("mástil") || title.includes("mast")) foilScore += 7;
+            if (title.includes("estabilizador") || title.includes("stabilizer") || title.includes("stab")) foilScore += 7;
+            if (title.includes("fuselaje") || title.includes("fuselage")) foilScore += 7;
+            if (title.includes("frontwing") || title.includes("front wing")) foilScore += 7;
+            if (title.includes("sabfoil") || title.includes("moses") || title.includes("levitator")) foilScore += 9;
+            
+            // 3. Coincidencias en la descripción (peso medio/bajo)
+            if (desc.includes("tabla de wing") || desc.includes("tabla foil")) boardScore += 4;
+            if (desc.includes("ala wing") || desc.includes("ala de wing")) wingScore += 4;
+            if (desc.includes("foil completo") || desc.includes("mástil") || desc.includes("estabilizador")) foilScore += 4;
+            
+            // Caso especial: si solo dice wingfoil a secas (pack o equipo completo)
+            if (title.includes("wingfoil") && boardScore === 0 && wingScore === 0 && foilScore === 0) {
+                return "board"; // suele centrarse en la tabla/pack
+            }
+            
+            const maxScore = Math.max(boardScore, wingScore, foilScore);
+            if (maxScore > 0) {
+                if (maxScore === boardScore) return "board";
+                if (maxScore === wingScore) return "wing";
+                if (maxScore === foilScore) return "foil";
+            }
+            
+            return "other";
+        }
+
+        function renderListings() {
+            const grid = document.getElementById('listings-grid');
+            grid.innerHTML = '';
+
+            // Obtener valores de los nuevos filtros numéricos
+            const minLitersVal = parseFloat(document.getElementById('liters-min').value) || 0;
+            const maxLitersVal = parseFloat(document.getElementById('liters-max').value) || Infinity;
+            const minWingVal = parseFloat(document.getElementById('wing-min').value) || 0;
+            const maxWingVal = parseFloat(document.getElementById('wing-max').value) || Infinity;
+            const minPriceVal = parseFloat(document.getElementById('price-min-filter').value) || 0;
+            const maxPriceVal = parseFloat(document.getElementById('price-max-filter').value) || Infinity;
+
+            const hasActiveCriteria = (minLitersVal > 0 || maxLitersVal < Infinity || minWingVal > 0 || maxWingVal < Infinity);
+
+            function matchesActiveCriteria(item) {
+                if (minLitersVal > 0 || maxLitersVal < Infinity) {
+                    const lits = parseDetectedValues(item.litros_detectados);
+                    if (lits.length === 0 || !lits.some(l => l >= minLitersVal && l <= maxLitersVal)) {
+                        return false;
+                    }
+                }
+                if (minWingVal > 0 || maxWingVal < Infinity) {
+                    const wings = parseDetectedValues(item.ala_detectada);
+                    if (wings.length === 0 || !wings.some(w => w >= minWingVal && w <= maxWingVal)) {
+                        return false;
+                    }
+                }
+                return true;
+            }
+
+            function isHighlighted(item) {
+                if (hasActiveCriteria) {
+                    return matchesActiveCriteria(item);
+                }
+                return item.cumple_criterios;
+            }
+
+            // Filtrar anuncios primero
+            let filtered = listings.filter(item => {
+                // Lógica de visualización de descartados
+                const isDismissed = dismissed.includes(item.url);
+                if (currentFilter === 'dismissed') {
+                    if (!isDismissed) return false;
+                } else {
+                    if (isDismissed) return false; // Ocultar descartados por defecto
+                }
+
+                // Filtro de Favoritos
+                if (currentFilter === 'favs') {
+                    if (!favorites.includes(item.url)) return false;
+                }
+
+                // Filtro de botones superiores
+                if (currentFilter === 'matches' && !isHighlighted(item)) return false;
+                if (currentFilter === 'available' && item.estado !== 'Disponible') return false;
+                if (currentFilter === 'shipping' && item.envio !== 'Envío disponible') return false;
+
+                // Filtro por Rango de Litros
+                if (minLitersVal > 0 || maxLitersVal < Infinity) {
+                    const lits = parseDetectedValues(item.litros_detectados);
+                    if (lits.length === 0 || !lits.some(l => l >= minLitersVal && l <= maxLitersVal)) {
+                        return false;
+                    }
+                }
+
+                // Filtro por Rango de Vela
+                if (minWingVal > 0 || maxWingVal < Infinity) {
+                    const wings = parseDetectedValues(item.ala_detectada);
+                    if (wings.length === 0 || !wings.some(w => w >= minWingVal && w <= maxWingVal)) {
+                        return false;
+                    }
+                }
+
+                // Filtro por Rango de Precios
+                const priceVal = getCleanPrice(item);
+                if (priceVal < minPriceVal || priceVal > maxPriceVal) return false;
+
+                // Filtro de Categoría
+                if (currentCategory !== 'all') {
+                    const itemType = getListingType(item);
+                    if (itemType !== currentCategory) return false;
+                }
+
+                // Filtro de búsqueda de texto
+                if (searchQuery) {
+                    const query = searchQuery.toLowerCase();
+                    const title = (item.titulo || "").toLowerCase();
+                    const desc = (item.descripcion || "").toLowerCase();
+                    const loc = (item.ubicacion || "").toLowerCase();
+                    return title.includes(query) || desc.includes(query) || loc.includes(query);
+                }
+                return true;
+            });
+
+            // Actualizar contador de resultados visibles y tarjetas de estadísticas
+            document.getElementById('results-count').innerText = `Mostrando ${filtered.length} de ${listings.length} anuncios`;
+            
+            document.getElementById('stat-total').innerText = filtered.length;
+            document.getElementById('stat-available').innerText = filtered.filter(x => x.estado === 'Disponible').length;
+            document.getElementById('stat-shippable').innerText = filtered.filter(x => x.envio === 'Envío disponible').length;
+
+
+            // Calcular y actualizar estadísticas de precios de la selección activa
+            const activePrices = filtered.map(getCleanPrice).filter(p => p > 0);
+            let minPrice = 0, maxPrice = 0, avgPrice = 0;
+            if (activePrices.length > 0) {
+                minPrice = Math.min(...activePrices);
+                maxPrice = Math.max(...activePrices);
+                avgPrice = Math.round(activePrices.reduce((a, b) => a + b, 0) / activePrices.length);
+            }
+            document.getElementById('price-min').innerText = minPrice > 0 ? `${minPrice}€` : 'N/D';
+            document.getElementById('price-max').innerText = maxPrice > 0 ? `${maxPrice}€` : 'N/D';
+            document.getElementById('price-avg').innerText = avgPrice > 0 ? `${avgPrice}€` : 'N/D';
+
+            // Helper para obtener precio limpio para ordenar (evitar NaN que rompe el .sort)
+            function getCleanPrice(item) {
+                const val = parseFloat(item.precio);
+                return isNaN(val) ? 0 : val;
+            }
+
+            // Helpers para obtener litros y ala máximos para ordenar
+            function getMaxLiters(item) {
+                const lits = parseDetectedValues(item.litros_detectados);
+                return lits.length > 0 ? Math.max(...lits) : 0;
+            }
+
+            function getMaxWing(item) {
+                const wings = parseDetectedValues(item.ala_detectada);
+                return wings.length > 0 ? Math.max(...wings) : 0;
+            }
+
+            // Ordenar
+            if (currentSort === 'price-asc') {
+                filtered.sort((a, b) => getCleanPrice(a) - getCleanPrice(b));
+            } else if (currentSort === 'price-desc') {
+                filtered.sort((a, b) => getCleanPrice(b) - getCleanPrice(a));
+            } else if (currentSort === 'liters-asc') {
+                filtered.sort((a, b) => getMaxLiters(a) - getMaxLiters(b));
+            } else if (currentSort === 'liters-desc') {
+                filtered.sort((a, b) => getMaxLiters(b) - getMaxLiters(a));
+            } else if (currentSort === 'wing-asc') {
+                filtered.sort((a, b) => getMaxWing(a) - getMaxWing(b));
+            } else if (currentSort === 'wing-desc') {
+                filtered.sort((a, b) => getMaxWing(b) - getMaxWing(a));
+            } else if (currentSort === 'date-desc') {
+                filtered.sort((a, b) => new Date(b.fecha_publicacion || 0) - new Date(a.fecha_publicacion || 0));
+            }
+
+            if (filtered.length === 0) {
+                grid.innerHTML = `<div class="no-results">No se encontraron anuncios que coincidan con la búsqueda o filtros.</div>`;
+                return;
+            }
+
+            filtered.forEach(item => {
+                const itemIsHighlighted = isHighlighted(item);
+                const card = document.createElement('div');
+                card.className = 'card' + (itemIsHighlighted ? ' match' : '');
+
+                // Botones de acción (Favoritos/Descartes)
+                const isFav = favorites.includes(item.url);
+                const isDismissed = dismissed.includes(item.url);
+                
+                const favBtnHtml = `<button class="action-btn fav${isFav ? ' active' : ''}" onclick="toggleFav('${item.url}', event)" title="${isFav ? 'Quitar de favoritos' : 'Marcar como favorito'}">★</button>`;
+                
+                let dismissBtnHtml = '';
+                if (currentFilter === 'dismissed') {
+                    dismissBtnHtml = `<button class="action-btn dismiss" onclick="restoreItem('${item.url}', event)" title="Recuperar anuncio">🔄</button>`;
+                } else {
+                    dismissBtnHtml = `<button class="action-btn dismiss" onclick="dismissItem('${item.url}', event)" title="Descartar anuncio">✕</button>`;
+                }
+
+                const actionsHtml = `
+                    <div class="card-actions">
+                        ${favBtnHtml}
+                        ${dismissBtnHtml}
+                    </div>
+                `;
+
+                // Badges
+                let badgesHtml = '';
+                if (itemIsHighlighted) {
+                    badgesHtml += `<span class="badge badge-criteria">${hasActiveCriteria ? '¡Cumple Filtro!' : '¡Cumple Criterios!'}</span>`;
+                }
+                
+                const statusValue = item.estado || 'Disponible';
+                const statusClass = statusValue.toLowerCase();
+                badgesHtml += `<span class="badge badge-status ${statusClass}">${statusValue}</span>`;
+
+                const isShippable = item.envio === 'Envío disponible';
+                badgesHtml += `<span class="badge badge-shipping ${isShippable ? '' : 'no'}">${item.envio}</span>`;
+
+                if (item.litros_detectados && item.litros_detectados !== '[]') {
+                    badgesHtml += `<span class="badge badge-info">${item.litros_detectados} Litros</span>`;
+                }
+                if (item.ala_detectada && item.ala_detectada !== '[]') {
+                    badgesHtml += `<span class="badge badge-info">${item.ala_detectada}m Ala</span>`;
+                }
+
+                const imgs = item.imagen ? item.imagen.split('|') : [];
+                let imageHtml = '';
+                if (imgs.length > 0 && imgs[0] !== '') {
+                    const badgePhotos = imgs.length > 1 ? `<span class="badge-photos-count">📸 ${imgs.length} fotos</span>` : '';
+                    const itemIndex = listings.indexOf(item);
+                    imageHtml = `
+                        <div class="card-image-container" onclick="openGallery(${itemIndex}, 0)">
+                            <img src="${imgs[0]}" class="card-image" alt="${item.titulo}" loading="lazy">
+                            ${badgePhotos}
+                            <div class="card-image-overlay">Ampliar galería</div>
+                        </div>
+                    `;
+                } else {
+                    imageHtml = `<div class="card-image-placeholder">Sin imagen de producto</div>`;
+                }
+
+                card.innerHTML = `
+                    ${actionsHtml}
+                    ${imageHtml}
+                    <div class="card-body">
+                        <div>
+                            <div class="card-header">
+                                <span class="card-title" title="${item.titulo}">${item.titulo}</span>
+                                <span class="card-price">${item.precio ? item.precio + '€' : 'N/D'}</span>
+                            </div>
+                            <div class="card-meta">
+                                <span>📍 ${item.ubicacion}</span>
+                                <span>📅 ${item.fecha_publicacion}</span>
+                            </div>
+                            <div class="card-badges">
+                                ${badgesHtml}
+                            </div>
+                            <div class="card-description" onclick="this.classList.toggle('expanded')" title="Haz clic para expandir la descripción">
+                                ${item.descripcion}
+                            </div>
+                        </div>
+                        <div class="card-footer">
+                            <a href="${item.url}" target="_blank" class="btn-link">Ver en Wallapop</a>
+                        </div>
+                    </div>
+                `;
+                grid.appendChild(card);
+            });
+        }
+
+        // Listeners para botones de filtrado principales
+        document.querySelectorAll('.controls .filter-group:first-of-type .filter-btn').forEach(btn => {
+            btn.addEventListener('click', (e) => {
+                document.querySelectorAll('.controls .filter-group:first-of-type .filter-btn').forEach(b => b.classList.remove('active'));
+                e.target.classList.add('active');
+                currentFilter = e.target.getAttribute('data-filter');
+                renderListings();
+            });
+        });
+
+        // Listeners para filtros de categoría
+        document.querySelectorAll('#category-filter-group .filter-btn').forEach(btn => {
+            btn.addEventListener('click', (e) => {
+                document.querySelectorAll('#category-filter-group .filter-btn').forEach(b => b.classList.remove('active'));
+                e.target.classList.add('active');
+                currentCategory = e.target.getAttribute('data-category');
+                renderListings();
+            });
+        });
+
+        // Listener para caja de búsqueda
+        document.getElementById('search-input').addEventListener('input', (e) => {
+            searchQuery = e.target.value;
+            renderListings();
+        });
+
+        // Listeners para filtros numéricos (litros, vela y precios)
+        document.getElementById('liters-min').addEventListener('input', () => renderListings());
+        document.getElementById('liters-max').addEventListener('input', () => renderListings());
+        document.getElementById('wing-min').addEventListener('input', () => renderListings());
+        document.getElementById('wing-max').addEventListener('input', () => renderListings());
+        document.getElementById('price-min-filter').addEventListener('input', () => renderListings());
+        document.getElementById('price-max-filter').addEventListener('input', () => renderListings());
+
+        // Listener para selector de orden
+        document.getElementById('sort-select').addEventListener('change', (e) => {
+            currentSort = e.target.value;
+            renderListings();
+        });
+
+        // --- Gallery Lightbox Modal Functions ---
+        let activeGalleryItem = null;
+        let activeImageIndex = 0;
+
+        window.openGallery = function(itemIndex, imgIndex) {
+            activeGalleryItem = listings[itemIndex];
+            activeImageIndex = imgIndex;
+            
+            const modal = document.getElementById('gallery-modal');
+            modal.style.display = 'flex';
+            updateGalleryContent();
+            
+            document.addEventListener('keydown', handleKeyNavigation);
+        };
+
+        window.closeGallery = function() {
+            const modal = document.getElementById('gallery-modal');
+            modal.style.display = 'none';
+            document.removeEventListener('keydown', handleKeyNavigation);
+        };
+
+        window.closeGalleryOnOutsideClick = function(event) {
+            const modal = document.getElementById('gallery-modal');
+            if (event.target === modal) {
+                closeGallery();
+            }
+        };
+
+        function updateGalleryContent() {
+            if (!activeGalleryItem) return;
+            const imgs = activeGalleryItem.imagen ? activeGalleryItem.imagen.split('|') : [];
+            if (imgs.length === 0) return;
+            
+            if (activeImageIndex < 0) activeImageIndex = imgs.length - 1;
+            if (activeImageIndex >= imgs.length) activeImageIndex = 0;
+            
+            const imgEl = document.getElementById('modal-image');
+            imgEl.src = imgs[activeImageIndex];
+            
+            const infoEl = document.getElementById('modal-info');
+            infoEl.innerText = `${activeGalleryItem.titulo} (${activeImageIndex + 1} de ${imgs.length})`;
+            
+            const thumbsEl = document.getElementById('modal-thumbnails');
+            thumbsEl.innerHTML = '';
+            
+            if (imgs.length > 1) {
+                imgs.forEach((imgSrc, idx) => {
+                    const thumb = document.createElement('img');
+                    thumb.src = imgSrc;
+                    thumb.className = `thumb-img${idx === activeImageIndex ? ' active' : ''}`;
+                    thumb.onclick = () => {
+                        activeImageIndex = idx;
+                        updateGalleryContent();
+                    };
+                    thumbsEl.appendChild(thumb);
+                });
+            }
+        }
+
+        window.prevImage = function() {
+            activeImageIndex--;
+            updateGalleryContent();
+        };
+
+        window.nextImage = function() {
+            activeImageIndex++;
+            updateGalleryContent();
+        };
+
+        function handleKeyNavigation(e) {
+            if (e.key === 'ArrowLeft') {
+                prevImage();
+            } else if (e.key === 'ArrowRight') {
+                nextImage();
+            } else if (e.key === 'Escape') {
+                closeGallery();
+            }
+        }
+
+        // Render inicial
+        renderListings();
+
+        // Colapsar filtros por defecto en móviles al cargar
+        if (window.innerWidth < 768) {
+            const container = document.getElementById('filters-container');
+            const btn = document.getElementById('toggle-filters-btn');
+            container.style.maxHeight = '0px';
+            container.style.opacity = '0';
+            btn.innerText = 'Mostrar Filtros';
+        }
+    </script>
+
+    <!-- Modal para visualización de fotos -->
+    <div id="gallery-modal" class="modal" onclick="closeGalleryOnOutsideClick(event)">
+        <div class="modal-content-wrapper">
+            <span class="close-btn" onclick="closeGallery()">&times;</span>
+            <button class="nav-btn prev-btn" onclick="prevImage()">&lsaquo;</button>
+            <img id="modal-image" class="modal-img" src="" alt="Vista completa">
+            <button class="nav-btn next-btn" onclick="nextImage()">&rsaquo;</button>
+            <div id="modal-info" class="modal-info"></div>
+            <div id="modal-thumbnails" class="thumbnails-container"></div>
+        </div>
+    </div>
+</body>
+</html>
