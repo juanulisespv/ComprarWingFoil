@@ -219,12 +219,19 @@ class WallapopScraper:
             current_position = self.driver.execute_script("return window.pageYOffset;")
             target_position = last_height
             
-            # Scroll ultrarrápido instantáneo al fondo de la página
-            logger.info("Realizando salto instantáneo al fondo de la página...")
-            self.driver.execute_script("window.scrollTo(0, document.body.scrollHeight);")
-            time.sleep(0.6)
+            # Scroll fluido y rápido para forzar la activación de React/Next.js en Wallapop
+            logger.info("Realizando scroll fluido hacia el fondo de la página...")
+            while current_position < target_position:
+                step = random.randint(700, 1200)
+                current_position += step
+                if current_position > target_position:
+                    current_position = target_position
+                self.driver.execute_script(f"window.scrollTo(0, {current_position});")
+                time.sleep(0.04)
             
-            # Buscar y pulsar botones de "Cargar más" de forma ultrarrápida vía JS
+            time.sleep(1.2)
+            
+            # Buscar y pulsar botones de "Cargar más" de forma automática
             try:
                 clicked_btn = self.driver.execute_script("""
                     const elements = document.querySelectorAll("walla-button, button, a, div[role='button']");
@@ -252,11 +259,9 @@ class WallapopScraper:
                 """)
                 
                 if clicked_btn:
-                    logger.info("¡Pulsado el botón de 'Cargar más' resultados al instante!")
-                    time.sleep(0.8)
+                    logger.info("¡Pulsado el botón de 'Cargar más' resultados de forma automática!")
+                    time.sleep(1.2)
                     no_growth_attempts = 0
-            except Exception as e:
-                logger.debug(f"No se pudo hacer clic en el botón de Cargar más: {e}")
             except Exception as e:
                 logger.debug(f"No se pudo hacer clic en el botón de Cargar más: {e}")
 
