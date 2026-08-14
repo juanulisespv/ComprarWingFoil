@@ -1072,6 +1072,7 @@ def generate_html_report(csv_path, html_path):
             font-family: 'Outfit', sans-serif;
             padding: 2rem;
             line-height: 1.5;
+            font-size: 18px;
         }}
         .container {{
             max-width: 1200px;
@@ -1088,7 +1089,7 @@ def generate_html_report(csv_path, html_path):
             gap: 1rem;
         }}
         h1 {{
-            font-size: 2.2rem;
+            font-size: 2.5rem;
             font-weight: 700;
             background: linear-gradient(135deg, #60a5fa, #10b981);
             -webkit-background-clip: text;
@@ -1112,14 +1113,14 @@ def generate_html_report(csv_path, html_path):
             box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1);
         }}
         .stat-card h3 {{
-            font-size: 0.85rem;
+            font-size: 1rem;
             color: var(--text-muted);
             text-transform: uppercase;
             letter-spacing: 0.05em;
             margin-bottom: 0.5rem;
         }}
         .stat-card p {{
-            font-size: 2rem;
+            font-size: 2.2rem;
             font-weight: 700;
             color: #ffffff;
         }}
@@ -1144,12 +1145,12 @@ def generate_html_report(csv_path, html_path):
         }}
         .search-box input {{
             width: 100%;
-            padding: 0.8rem 1.2rem;
+            padding: 0.9rem 1.3rem;
             background-color: var(--bg-color);
             border: 1px solid var(--border-color);
             border-radius: 8px;
             color: var(--text-color);
-            font-size: 1rem;
+            font-size: 1.15rem;
             font-family: inherit;
             outline: none;
             transition: border-color 0.2s;
@@ -1166,10 +1167,10 @@ def generate_html_report(csv_path, html_path):
             background-color: var(--bg-color);
             border: 1px solid var(--border-color);
             color: var(--text-color);
-            padding: 0.6rem 1.2rem;
+            padding: 0.75rem 1.3rem;
             border-radius: 8px;
             cursor: pointer;
-            font-size: 0.9rem;
+            font-size: 1.05rem;
             font-family: inherit;
             transition: all 0.2s;
         }}
@@ -1183,12 +1184,12 @@ def generate_html_report(csv_path, html_path):
             font-weight: 600;
         }}
         .sort-select {{
-            padding: 0.75rem 1.2rem;
+            padding: 0.8rem 1.3rem;
             background-color: var(--bg-color);
             border: 1px solid var(--border-color);
             border-radius: 8px;
             color: var(--text-color);
-            font-size: 0.9rem;
+            font-size: 1.05rem;
             font-family: inherit;
             outline: none;
             cursor: pointer;
@@ -1241,7 +1242,7 @@ def generate_html_report(csv_path, html_path):
             align-items: center;
             justify-content: center;
             color: var(--text-muted);
-            font-size: 0.85rem;
+            font-size: 1rem;
             border-bottom: 1px solid var(--border-color);
         }}
         .card-header {{
@@ -1252,7 +1253,7 @@ def generate_html_report(csv_path, html_path):
             gap: 0.5rem;
         }}
         .card-title {{
-            font-size: 1.25rem;
+            font-size: 1.45rem;
             font-weight: 600;
             color: #ffffff;
             display: -webkit-box;
@@ -1262,16 +1263,16 @@ def generate_html_report(csv_path, html_path):
             line-height: 1.3;
         }}
         .card-price {{
-            font-size: 1.3rem;
+            font-size: 1.5rem;
             font-weight: 700;
             color: var(--primary);
             background-color: var(--primary-glow);
-            padding: 0.2rem 0.6rem;
+            padding: 0.3rem 0.8rem;
             border-radius: 6px;
             white-space: nowrap;
         }}
         .card-meta {{
-            font-size: 0.85rem;
+            font-size: 1.05rem;
             color: var(--text-muted);
             margin-bottom: 1rem;
             display: flex;
@@ -1284,9 +1285,9 @@ def generate_html_report(csv_path, html_path):
             margin-bottom: 1rem;
         }}
         .badge {{
-            font-size: 0.72rem;
+            font-size: 0.88rem;
             font-weight: 600;
-            padding: 0.25rem 0.5rem;
+            padding: 0.35rem 0.65rem;
             border-radius: 4px;
             text-transform: uppercase;
         }}
@@ -1332,7 +1333,7 @@ def generate_html_report(csv_path, html_path):
             100% {{ box-shadow: 0 0 0 0 rgba(251, 191, 36, 0); }}
         }}
         .card-description {{
-            font-size: 0.9rem;
+            font-size: 1.1rem;
             color: var(--text-muted);
             margin-bottom: 1.5rem;
             display: -webkit-box;
@@ -1342,6 +1343,7 @@ def generate_html_report(csv_path, html_path):
             cursor: pointer;
             transition: color 0.2s;
             white-space: pre-line;
+            line-height: 1.5;
         }}
         .card-description:hover {{
             color: var(--text-color);
@@ -1363,9 +1365,9 @@ def generate_html_report(csv_path, html_path):
             background: linear-gradient(135deg, #3b82f6, #10b981);
             color: #0b0f19;
             text-decoration: none;
-            padding: 0.6rem 1.2rem;
+            padding: 0.8rem 1.6rem;
             border-radius: 6px;
-            font-size: 0.9rem;
+            font-size: 1.15rem;
             font-weight: 600;
             transition: opacity 0.2s, transform 0.1s;
             text-align: center;
@@ -1378,7 +1380,7 @@ def generate_html_report(csv_path, html_path):
             text-align: center;
             padding: 4rem 2rem;
             color: var(--text-muted);
-            font-size: 1.2rem;
+            font-size: 1.3rem;
             grid-column: 1 / -1;
             background-color: var(--card-bg);
             border: 1px solid var(--border-color);
@@ -1402,7 +1404,7 @@ def generate_html_report(csv_path, html_path):
             display: flex;
             align-items: center;
             justify-content: center;
-            font-size: 0.9rem;
+            font-size: 1rem;
             font-weight: 600;
             opacity: 0;
             transition: opacity 0.2s;
@@ -1416,9 +1418,9 @@ def generate_html_report(csv_path, html_path):
             right: 10px;
             background-color: rgba(11, 15, 25, 0.85);
             color: #ffffff;
-            padding: 0.2rem 0.5rem;
+            padding: 0.3rem 0.6rem;
             border-radius: 4px;
-            font-size: 0.75rem;
+            font-size: 0.95rem;
             font-weight: 600;
             border: 1px solid var(--border-color);
         }}
@@ -1438,37 +1440,36 @@ def generate_html_report(csv_path, html_path):
         .modal-content-wrapper {{
             position: relative;
             max-width: 90%;
-            max-height: 85%;
+            max-height: 90vh;
             display: flex;
             flex-direction: column;
             align-items: center;
         }}
         .modal-img {{
             max-width: 100%;
-            max-height: 70vh;
+            max-height: 75vh;
             object-fit: contain;
             border-radius: 8px;
-            box-shadow: 0 0 30px rgba(0, 0, 0, 0.6);
+            box-shadow: 0 10px 25px rgba(0, 0, 0, 0.5);
         }}
         .close-btn {{
             position: absolute;
-            top: -45px;
+            top: -40px;
             right: 0;
             color: #ffffff;
             font-size: 2.5rem;
             font-weight: bold;
             cursor: pointer;
             transition: color 0.2s;
-            user-select: none;
         }}
         .close-btn:hover {{
-            color: var(--primary);
+            color: var(--danger);
         }}
         .nav-btn {{
             position: absolute;
             top: 50%;
             transform: translateY(-50%);
-            background-color: rgba(21, 27, 45, 0.7);
+            background-color: rgba(15, 23, 42, 0.7);
             border: 1px solid var(--border-color);
             color: #ffffff;
             font-size: 2rem;
@@ -1501,24 +1502,24 @@ def generate_html_report(csv_path, html_path):
             
             /* Mejoras de texto responsivo para móvil */
             body {{
-                font-size: 18px;
+                font-size: 20px;
             }}
             .card-title {{
-                font-size: 1.5rem;
+                font-size: 1.65rem;
             }}
             .card-description {{
-                font-size: 1.15rem;
+                font-size: 1.25rem;
             }}
             .card-meta {{
-                font-size: 1.05rem;
+                font-size: 1.15rem;
             }}
             .badge {{
-                font-size: 0.85rem;
-                padding: 0.35rem 0.6rem;
+                font-size: 0.95rem;
+                padding: 0.4rem 0.7rem;
             }}
             .btn-link {{
-                font-size: 1.15rem;
-                padding: 0.9rem 1.5rem;
+                font-size: 1.25rem;
+                padding: 1rem 1.6rem;
                 width: 100%;
                 text-align: center;
             }}
@@ -1529,15 +1530,15 @@ def generate_html_report(csv_path, html_path):
             .controls-panel select, 
             .controls-panel button,
             .controls-panel span {{
-                font-size: 1.15rem !important;
+                font-size: 1.25rem !important;
             }}
             
             .controls-header span {{
-                font-size: 1.35rem !important;
+                font-size: 1.45rem !important;
             }}
             
             .filter-btn {{
-                padding: 0.9rem 1.3rem !important;
+                padding: 1rem 1.4rem !important;
             }}
         }}
         .modal-info {{
@@ -1658,10 +1659,10 @@ def generate_html_report(csv_path, html_path):
 
         <div class="controls-panel" style="background-color: var(--card-bg); border: 1px solid var(--border-color); border-radius: 12px; padding: 1.2rem; margin-bottom: 2rem;">
             <div class="controls-header" style="display: flex; justify-content: space-between; align-items: center; cursor: pointer; user-select: none;" onclick="toggleFilters()">
-                <span style="font-weight: 700; font-size: 1.15rem; display: flex; align-items: center; gap: 0.5rem; color: #ffffff;">
+                <span style="font-weight: 700; font-size: 1.35rem; display: flex; align-items: center; gap: 0.5rem; color: #ffffff;">
                     🔍 Panel de Filtros y Búsqueda
                 </span>
-                <button id="toggle-filters-btn" style="background: transparent; border: 1px solid var(--border-color); border-radius: 6px; color: var(--text-muted); padding: 0.4rem 0.8rem; font-size: 0.9rem; cursor: pointer; font-weight: 600; transition: all 0.2s;">
+                <button id="toggle-filters-btn" style="background: transparent; border: 1px solid var(--border-color); border-radius: 6px; color: var(--text-muted); padding: 0.5rem 1rem; font-size: 1.05rem; cursor: pointer; font-weight: 600; transition: all 0.2s;">
                     Ocultar Filtros
                 </button>
             </div>
@@ -1672,35 +1673,35 @@ def generate_html_report(csv_path, html_path):
                 <div class="search-box">
                     <input type="text" id="search-input" placeholder="Buscar por título, ubicación o descripción...">
                 </div>
-                <button class="filter-btn" onclick="resetFilters()" style="background-color: rgba(239, 68, 68, 0.1); border-color: rgba(239, 68, 68, 0.2); color: var(--danger); font-weight: 600; padding: 0.8rem 1.5rem;">Limpiar Filtros</button>
+                <button class="filter-btn" onclick="resetFilters()" style="background-color: rgba(239, 68, 68, 0.1); border-color: rgba(239, 68, 68, 0.2); color: var(--danger); font-weight: 600; padding: 0.8rem 1.5rem; font-size: 1.1rem;">Limpiar Filtros</button>
             </div>
             
             <!-- Fila 2: Rangos numéricos y Ordenación -->
             <div style="display: flex; gap: 1rem; width: 100%; flex-wrap: wrap; justify-content: space-between; align-items: center; margin-bottom: 1rem;">
                 <div style="display: flex; gap: 0.8rem; flex-wrap: wrap; align-items: center; border: 1px solid var(--border-color); padding: 0.6rem 1rem; border-radius: 8px; background-color: rgba(0,0,0,0.15);">
                     <div style="display: flex; align-items: center; gap: 0.4rem;">
-                        <label for="liters-min" style="font-size: 0.85rem; color: var(--text-muted); font-weight: 600;">Litros Mín:</label>
-                        <input type="number" id="liters-min" placeholder="Ej. 80" style="width: 70px; padding: 0.4rem 0.5rem; background-color: var(--bg-color); border: 1px solid var(--border-color); border-radius: 6px; color: var(--text-color); font-family: inherit; font-size: 0.9rem; outline: none;">
+                        <label for="liters-min" style="font-size: 1.05rem; color: var(--text-muted); font-weight: 600;">Litros Mín:</label>
+                        <input type="number" id="liters-min" placeholder="Ej. 80" style="width: 85px; padding: 0.5rem 0.6rem; background-color: var(--bg-color); border: 1px solid var(--border-color); border-radius: 6px; color: var(--text-color); font-family: inherit; font-size: 1.1rem; outline: none;">
                     </div>
                     <div style="display: flex; align-items: center; gap: 0.4rem;">
-                        <label for="liters-max" style="font-size: 0.85rem; color: var(--text-muted); font-weight: 600;">Litros Máx:</label>
-                        <input type="number" id="liters-max" placeholder="Ej. 120" style="width: 70px; padding: 0.4rem 0.5rem; background-color: var(--bg-color); border: 1px solid var(--border-color); border-radius: 6px; color: var(--text-color); font-family: inherit; font-size: 0.9rem; outline: none;">
+                        <label for="liters-max" style="font-size: 1.05rem; color: var(--text-muted); font-weight: 600;">Litros Máx:</label>
+                        <input type="number" id="liters-max" placeholder="Ej. 120" style="width: 85px; padding: 0.5rem 0.6rem; background-color: var(--bg-color); border: 1px solid var(--border-color); border-radius: 6px; color: var(--text-color); font-family: inherit; font-size: 1.1rem; outline: none;">
                     </div>
                     <div style="display: flex; align-items: center; gap: 0.4rem; border-left: 1px solid var(--border-color); padding-left: 0.8rem;">
-                        <label for="wing-min" style="font-size: 0.85rem; color: var(--text-muted); font-weight: 600;">Ala Mín:</label>
-                        <input type="number" step="0.1" id="wing-min" placeholder="Ej. 4" style="width: 65px; padding: 0.4rem 0.5rem; background-color: var(--bg-color); border: 1px solid var(--border-color); border-radius: 6px; color: var(--text-color); font-family: inherit; font-size: 0.9rem; outline: none;">
+                        <label for="wing-min" style="font-size: 1.05rem; color: var(--text-muted); font-weight: 600;">Ala Mín:</label>
+                        <input type="number" step="0.1" id="wing-min" placeholder="Ej. 4" style="width: 75px; padding: 0.5rem 0.6rem; background-color: var(--bg-color); border: 1px solid var(--border-color); border-radius: 6px; color: var(--text-color); font-family: inherit; font-size: 1.1rem; outline: none;">
                     </div>
                     <div style="display: flex; align-items: center; gap: 0.4rem;">
-                        <label for="wing-max" style="font-size: 0.85rem; color: var(--text-muted); font-weight: 600;">Ala Máx:</label>
-                        <input type="number" step="0.1" id="wing-max" placeholder="Ej. 6" style="width: 65px; padding: 0.4rem 0.5rem; background-color: var(--bg-color); border: 1px solid var(--border-color); border-radius: 6px; color: var(--text-color); font-family: inherit; font-size: 0.9rem; outline: none;">
+                        <label for="wing-max" style="font-size: 1.05rem; color: var(--text-muted); font-weight: 600;">Ala Máx:</label>
+                        <input type="number" step="0.1" id="wing-max" placeholder="Ej. 6" style="width: 75px; padding: 0.5rem 0.6rem; background-color: var(--bg-color); border: 1px solid var(--border-color); border-radius: 6px; color: var(--text-color); font-family: inherit; font-size: 1.1rem; outline: none;">
                     </div>
                     <div style="display: flex; align-items: center; gap: 0.4rem; border-left: 1px solid var(--border-color); padding-left: 0.8rem;">
-                        <label for="price-min-filter" style="font-size: 0.85rem; color: var(--text-muted); font-weight: 600;">Precio Mín:</label>
-                        <input type="number" id="price-min-filter" placeholder="Ej. 100" style="width: 70px; padding: 0.4rem 0.5rem; background-color: var(--bg-color); border: 1px solid var(--border-color); border-radius: 6px; color: var(--text-color); font-family: inherit; font-size: 0.9rem; outline: none;">
+                        <label for="price-min-filter" style="font-size: 1.05rem; color: var(--text-muted); font-weight: 600;">Precio Mín:</label>
+                        <input type="number" id="price-min-filter" placeholder="Ej. 100" style="width: 85px; padding: 0.5rem 0.6rem; background-color: var(--bg-color); border: 1px solid var(--border-color); border-radius: 6px; color: var(--text-color); font-family: inherit; font-size: 1.1rem; outline: none;">
                     </div>
                     <div style="display: flex; align-items: center; gap: 0.4rem;">
-                        <label for="price-max-filter" style="font-size: 0.85rem; color: var(--text-muted); font-weight: 600;">Precio Máx:</label>
-                        <input type="number" id="price-max-filter" placeholder="Ej. 500" style="width: 70px; padding: 0.4rem 0.5rem; background-color: var(--bg-color); border: 1px solid var(--border-color); border-radius: 6px; color: var(--text-color); font-family: inherit; font-size: 0.9rem; outline: none;">
+                        <label for="price-max-filter" style="font-size: 1.05rem; color: var(--text-muted); font-weight: 600;">Precio Máx:</label>
+                        <input type="number" id="price-max-filter" placeholder="Ej. 500" style="width: 85px; padding: 0.5rem 0.6rem; background-color: var(--bg-color); border: 1px solid var(--border-color); border-radius: 6px; color: var(--text-color); font-family: inherit; font-size: 1.1rem; outline: none;">
                     </div>
                 </div>
                 
@@ -1742,7 +1743,7 @@ def generate_html_report(csv_path, html_path):
         </div>
     </div>
 
-        <div id="filter-status" style="font-size: 0.95rem; color: var(--text-muted); margin-top: 1.5rem; margin-bottom: 1rem; font-weight: 600; display: flex; justify-content: space-between; align-items: center;">
+        <div id="filter-status" style="font-size: 1.25rem; color: var(--text-muted); margin-top: 1.5rem; margin-bottom: 1rem; font-weight: 600; display: flex; justify-content: space-between; align-items: center;">
             <span id="results-count">Mostrando 0 de 0 anuncios</span>
         </div>
 
