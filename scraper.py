@@ -219,34 +219,20 @@ class WallapopScraper:
             current_position = self.driver.execute_script("return window.pageYOffset;")
             target_position = last_height
             
-            # Scroll ágil en pasos más grandes para acelerar la carga de anuncios
-            # mientras se mantienen los triggers de lazy loading activos
-            logger.info("Realizando scroll ágil hacia el fondo de la página...")
-            while current_position < target_position:
-                step = random.randint(1200, 2500)
-                current_position += step
-                if current_position > target_position:
-                    current_position = target_position
-                self.driver.execute_script(f"window.scrollTo(0, {current_position});")
-                time.sleep(random.uniform(0.03, 0.08))
+            # Scroll ultrarrápido instantáneo al fondo de la página
+            logger.info("Realizando salto instantáneo al fondo de la página...")
+            self.driver.execute_script("window.scrollTo(0, document.body.scrollHeight);")
+            time.sleep(0.6)
             
-            # Esperar a que carguen los nuevos anuncios (1.0 a 1.8s)
-            wait_time = random.uniform(1.0, 1.8)
-            logger.info(f"Llegado al final temporal de la página. Esperando {wait_time:.2f}s para cargar más resultados...")
-            time.sleep(wait_time)
-            
-            # Buscar y pulsar botones de "Cargar más" (para cuando se detiene el scroll automático)
+            # Buscar y pulsar botones de "Cargar más" de forma ultrarrápida vía JS
             try:
-                # 1. Intentar hacer clic en el componente personalizado <walla-button> (que usa Shadow DOM)
-                clicked_walla = self.driver.execute_script("""
-                    const wallaBtns = document.querySelectorAll("walla-button");
-                    for (const btn of wallaBtns) {
+                clicked_btn = self.driver.execute_script("""
+                    const elements = document.querySelectorAll("walla-button, button, a, div[role='button']");
+                    for (const btn of elements) {
                         const attrText = (btn.getAttribute("text") || "").toLowerCase();
                         const innerTxt = (btn.innerText || "").toLowerCase();
-                        if (attrText.includes("cargar") || attrText.includes("ver") || 
-                            innerTxt.includes("cargar") || innerTxt.includes("ver")) {
-                            
-                            // Asegurarse de que el elemento sea visible y tenga dimensiones reales
+                        const txt = (attrText + " " + innerTxt).trim();
+                        if (txt.includes("cargar") || txt.includes("ver más") || txt.includes("ver mas") || txt.includes("mostrar")) {
                             const rect = btn.getBoundingClientRect();
                             if (rect.width > 0 && rect.height > 0) {
                                 btn.scrollIntoView({block: 'center'});
@@ -265,30 +251,12 @@ class WallapopScraper:
                     return false;
                 """)
                 
-                if clicked_walla:
-                    logger.info("¡Pulsado el botón personalizado <walla-button> de 'Cargar más' (Shadow DOM) de forma automática!")
-                    time.sleep(1.2)
+                if clicked_btn:
+                    logger.info("¡Pulsado el botón de 'Cargar más' resultados al instante!")
+                    time.sleep(0.8)
                     no_growth_attempts = 0
-                else:
-                    # 2. Fallback: Buscar en todos los elementos clicables comunes del DOM principal (si no se usa walla-button)
-                    potential_buttons = self.driver.find_elements(By.XPATH, "//*[self::button or self::a or self::div or self::span]")
-                    for btn in potential_buttons:
-                        try:
-                            if btn.is_displayed():
-                                txt = btn.text.strip().lower()
-                                if "cargar" in txt or "ver más" in txt or "ver mas" in txt or "mostrar" in txt:
-                                    # Comprobar tamaño para no pulsar un contenedor gigante por error
-                                    size = btn.size
-                                    if 0 < size['width'] < 500 and 0 < size['height'] < 100:
-                                        self.driver.execute_script("arguments[0].scrollIntoView({block: 'center'});", btn)
-                                        time.sleep(0.5)
-                                        btn.click()
-                                        logger.info(f"¡Pulsado el botón de 'Cargar más' resultados de forma automática! Tag: '{btn.tag_name}', Texto: '{btn.text}'")
-                                        time.sleep(1.2)
-                                        no_growth_attempts = 0  # resetear ya que cargamos más
-                                        break
-                        except Exception:
-                            continue
+            except Exception as e:
+                logger.debug(f"No se pudo hacer clic en el botón de Cargar más: {e}")
             except Exception as e:
                 logger.debug(f"No se pudo hacer clic en el botón de Cargar más: {e}")
 
