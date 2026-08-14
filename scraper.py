@@ -135,42 +135,48 @@ class WallapopScraper:
         return False
 
     def accept_cookies(self):
-        """Intenta hacer clic en el botón de aceptar cookies si aparece (incluyendo Shadow DOM)"""
-        # 1. Intentar el método JS para ConsentManager (Shadow DOM), que es el que usa Wallapop
+        """Intenta hacer clic en el botón de aceptar cookies si aparece (incluyendo Shadow DOM) de forma instantánea"""
         try:
             cmp_wrapper = self.driver.find_elements(By.ID, "cmpwrapper")
             if cmp_wrapper:
-                logger.info("Detectado el contenedor de cookies de ConsentManager (#cmpwrapper). Intentando cerrar vía Shadow DOM...")
                 self.driver.execute_script(
                     "document.querySelector('#cmpwrapper').shadowRoot.querySelector('.cmpboxbtnyes').click();"
                 )
                 logger.info("Cookies aceptadas con éxito en el Shadow DOM de ConsentManager.")
-                time.sleep(1.5)
+                time.sleep(0.5)
                 return
-        except Exception as e:
-            logger.debug(f"No se pudo hacer clic en el botón de ConsentManager en Shadow DOM: {e}")
+        except Exception:
+            pass
 
-        # 2. Métodos fallback tradicionales en el DOM principal
-        xpaths = [
-            "//button[@id='onetrust-accept-btn-handler']",
-            "//button[@id='didomi-notice-agree-button']",
-            "//button[contains(translate(text(), 'ACEPTAR', 'aceptar'), 'aceptar')]",
-            "//button[contains(translate(text(), 'AGREE', 'agree'), 'agree')]",
-            "//button[contains(translate(text(), 'ACEPTO', 'acepto'), 'acepto')]",
-            "//button[contains(@class, 'accept') or contains(@class, 'agree')]"
-        ]
-        
-        for xpath in xpaths:
-            try:
-                wait = WebDriverWait(self.driver, 2)
-                btn = wait.until(EC.element_to_be_clickable((By.XPATH, xpath)))
-                btn.click()
-                logger.info(f"Cookies aceptadas con éxito usando el selector: '{xpath}'")
-                time.sleep(1.5)
+        # Fallback instantáneo vía JavaScript sin timeouts innecesarios
+        try:
+            clicked = self.driver.execute_script("""
+                const selectors = ['#onetrust-accept-btn-handler', '#didomi-notice-agree-button', '.cmpboxbtnyes'];
+                for (const sel of selectors) {
+                    const btn = document.querySelector(sel);
+                    if (btn && btn.offsetParent !== null) {
+                        btn.click();
+                        return true;
+                    }
+                }
+                const btns = document.querySelectorAll('button');
+                for (const b of btns) {
+                    const txt = (b.innerText || '').toLowerCase();
+                    if (txt.includes('aceptar') || txt.includes('acepto') || txt.includes('agree')) {
+                        if (b.offsetParent !== null) {
+                            b.click();
+                            return true;
+                        }
+                    }
+                }
+                return false;
+            """)
+            if clicked:
+                logger.info("Cookies aceptadas con éxito mediante fallback JS.")
+                time.sleep(0.5)
                 return
-            except Exception:
-                continue
-        logger.info("No se detectó el banner de cookies o ya se aceptó previamente.")
+        except Exception:
+            pass
 
     def scrape_search_results(self, search_url, max_ads=100, ignore_separator=False):
         """
@@ -922,8 +928,8 @@ def main():
         for index, url in enumerate(urls_to_process, 1):
             logger.info(f"Procesando anuncio {index}/{len(urls_to_process)}: {url}")
             
-            # Espera aleatoria antes de abrir el anuncio para simular comportamiento humano (3-5s)
-            wait_time = random.uniform(3.0, 5.0)
+            # Espera ágil antes de abrir el anuncio (0.6-1.2s)
+            wait_time = random.uniform(0.6, 1.2)
             logger.info(f"Esperando {wait_time:.2f}s antes de abrir el anuncio...")
             time.sleep(wait_time)
             
