@@ -1719,7 +1719,7 @@ def generate_html_report(csv_path, html_path):
             <!-- Fila 3: Botones de Categorías y Tipos de Material -->
             <div style="display: flex; gap: 1rem; width: 100%; flex-wrap: wrap; justify-content: space-between; align-items: center; border-top: 1px solid var(--border-color); padding-top: 1rem;">
                 <!-- Filtros Principales -->
-                <div class="filter-group">
+                <div class="filter-group" id="main-filter-group">
                     <button class="filter-btn active" data-filter="all">Todos</button>
                     <button class="filter-btn" data-filter="matches">Cumplen Criterios</button>
                     <button class="filter-btn" data-filter="available">Solo Disponibles</button>
@@ -1811,7 +1811,19 @@ def generate_html_report(csv_path, html_path):
             document.getElementById('wing-max').value = '';
             document.getElementById('price-min-filter').value = '';
             document.getElementById('price-max-filter').value = '';
+            document.getElementById('sort-select').value = 'default';
             searchQuery = '';
+            currentSort = 'default';
+            currentFilter = 'all';
+            currentCategory = 'all';
+
+            document.querySelectorAll('#main-filter-group .filter-btn').forEach(b => b.classList.remove('active'));
+            document.querySelectorAll('#category-filter-group .filter-btn').forEach(b => b.classList.remove('active'));
+            const defaultMain = document.querySelector('#main-filter-group .filter-btn[data-filter="all"]');
+            if (defaultMain) defaultMain.classList.add('active');
+            const defaultCat = document.querySelector('#category-filter-group .filter-btn[data-category="all"]');
+            if (defaultCat) defaultCat.classList.add('active');
+
             renderListings();
         }};
 
@@ -2142,9 +2154,9 @@ def generate_html_report(csv_path, html_path):
         }}
 
         // Listeners para botones de filtrado principales
-        document.querySelectorAll('.controls .filter-group:first-of-type .filter-btn').forEach(btn => {{
+        document.querySelectorAll('#main-filter-group .filter-btn').forEach(btn => {{
             btn.addEventListener('click', (e) => {{
-                document.querySelectorAll('.controls .filter-group:first-of-type .filter-btn').forEach(b => b.classList.remove('active'));
+                document.querySelectorAll('#main-filter-group .filter-btn').forEach(b => b.classList.remove('active'));
                 e.target.classList.add('active');
                 currentFilter = e.target.getAttribute('data-filter');
                 renderListings();
