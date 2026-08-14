@@ -219,19 +219,19 @@ class WallapopScraper:
             current_position = self.driver.execute_script("return window.pageYOffset;")
             target_position = last_height
             
-            # Scroll gradual en pasos pequeños/medianos aleatorios para simular lectura humana
-            # y forzar la activación de triggers de lazy loading en la página
-            logger.info("Realizando scroll gradual hacia el fondo de la página...")
+            # Scroll ágil en pasos más grandes para acelerar la carga de anuncios
+            # mientras se mantienen los triggers de lazy loading activos
+            logger.info("Realizando scroll ágil hacia el fondo de la página...")
             while current_position < target_position:
-                step = random.randint(300, 600)
+                step = random.randint(1200, 2500)
                 current_position += step
                 if current_position > target_position:
                     current_position = target_position
                 self.driver.execute_script(f"window.scrollTo(0, {current_position});")
-                time.sleep(random.uniform(0.1, 0.25))
+                time.sleep(random.uniform(0.03, 0.08))
             
-            # Esperar aleatoriamente a que carguen los nuevos anuncios (2.5 a 4.0s)
-            wait_time = random.uniform(2.5, 4.0)
+            # Esperar a que carguen los nuevos anuncios (1.0 a 1.8s)
+            wait_time = random.uniform(1.0, 1.8)
             logger.info(f"Llegado al final temporal de la página. Esperando {wait_time:.2f}s para cargar más resultados...")
             time.sleep(wait_time)
             
@@ -267,7 +267,7 @@ class WallapopScraper:
                 
                 if clicked_walla:
                     logger.info("¡Pulsado el botón personalizado <walla-button> de 'Cargar más' (Shadow DOM) de forma automática!")
-                    time.sleep(3)
+                    time.sleep(1.2)
                     no_growth_attempts = 0
                 else:
                     # 2. Fallback: Buscar en todos los elementos clicables comunes del DOM principal (si no se usa walla-button)
@@ -281,10 +281,10 @@ class WallapopScraper:
                                     size = btn.size
                                     if 0 < size['width'] < 500 and 0 < size['height'] < 100:
                                         self.driver.execute_script("arguments[0].scrollIntoView({block: 'center'});", btn)
-                                        time.sleep(1)
+                                        time.sleep(0.5)
                                         btn.click()
                                         logger.info(f"¡Pulsado el botón de 'Cargar más' resultados de forma automática! Tag: '{btn.tag_name}', Texto: '{btn.text}'")
-                                        time.sleep(3)
+                                        time.sleep(1.2)
                                         no_growth_attempts = 0  # resetear ya que cargamos más
                                         break
                         except Exception:
