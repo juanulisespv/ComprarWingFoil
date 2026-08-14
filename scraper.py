@@ -265,28 +265,29 @@ class WallapopScraper:
             except Exception as e:
                 logger.debug(f"No se pudo hacer clic en el botón de Cargar más: {e}")
 
-            # Recopilar URLs actuales que contengan /item/
+            # Recopilar URLs actuales que contengan /item/ de forma ultrarrápida vía JavaScript
             try:
-                elements = self.driver.find_elements(By.XPATH, "//a[contains(@href, '/item/')]")
+                raw_item_data = self.driver.execute_script("""
+                    const links = Array.from(document.querySelectorAll("a[href*='/item/']"));
+                    return links.map(a => {
+                        const rect = a.getBoundingClientRect();
+                        return {
+                            href: a.href,
+                            y: rect.top + window.pageYOffset
+                        };
+                    });
+                """)
                 new_urls_count = 0
-                for el in elements:
+                for item in raw_item_data:
                     try:
-                        # Si está por debajo del separador, omitirlo
-                        if separator_y is not None:
-                            try:
-                                el_y = el.location['y']
-                                if el_y >= separator_y:
-                                    continue
-                            except Exception:
-                                pass
-
-                        href = el.get_attribute("href")
+                        href = item.get("href", "")
+                        el_y = item.get("y", 0)
+                        if separator_y is not None and el_y >= separator_y:
+                            continue
                         if href and "/item/" in href:
-                            # Limpiar parámetros de consulta
                             clean_url = href.split('?')[0]
                             if not clean_url.startswith("http"):
                                 clean_url = "https://es.wallapop.com" + clean_url
-                            
                             if clean_url not in collected_urls:
                                 collected_urls.add(clean_url)
                                 new_urls_count += 1
