@@ -74,6 +74,9 @@ class WallapopScraper:
         if self.headless:
             options.add_argument('--headless')
         
+        # Carga ultra-rápida (eager) de páginas
+        options.page_load_strategy = 'eager'
+        
         # Evadir firmas básicas de detección en Selenium estándar
         options.add_argument('--disable-blink-features=AutomationControlled')
         options.add_experimental_option("excludeSwitches", ["enable-automation"])
