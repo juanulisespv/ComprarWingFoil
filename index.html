@@ -664,6 +664,8 @@
                 
                 <select class="sort-select" id="sort-select">
                     <option value="default">Relevancia por defecto</option>
+                    <option value="dist-asc">📍 Distancia: Más cercanos a 01005 (Vitoria)</option>
+                    <option value="dist-desc">📍 Distancia: Más lejanos a 01005 (Vitoria)</option>
                     <option value="price-asc">Precio: de Menor a Mayor</option>
                     <option value="price-desc">Precio: de Mayor a Menor</option>
                     <option value="liters-asc">Litros: de Menor a Mayor</option>
@@ -999,8 +1001,64 @@
                 return wings.length > 0 ? Math.max(...wings) : 0;
             }
 
+            // Mapa de coordenadas (lat, lon) por prefijo de Código Postal de España (01-52)
+            const provinceCoords = {
+                "01": { lat: 42.85, lon: -2.67 }, "02": { lat: 38.99, lon: -1.85 }, "03": { lat: 38.34, lon: -0.48 }, "04": { lat: 36.83, lon: -2.46 },
+                "05": { lat: 40.65, lon: -4.69 }, "06": { lat: 38.87, lon: -6.97 }, "07": { lat: 39.57, lon: 2.65 },  "08": { lat: 41.38, lon: 2.17 },
+                "09": { lat: 42.34, lon: -3.70 }, "10": { lat: 39.47, lon: -6.37 }, "11": { lat: 36.52, lon: -6.28 }, "12": { lat: 39.98, lon: -0.04 },
+                "13": { lat: 38.98, lon: -3.92 }, "14": { lat: 37.88, lon: -4.77 }, "15": { lat: 43.36, lon: -8.41 }, "16": { lat: 40.07, lon: -2.13 },
+                "17": { lat: 41.98, lon: 2.82 },  "18": { lat: 37.17, lon: -3.60 }, "19": { lat: 40.63, lon: -3.16 }, "20": { lat: 43.31, lon: -1.98 },
+                "21": { lat: 37.26, lon: -6.94 }, "22": { lat: 42.13, lon: -0.40 }, "23": { lat: 37.77, lon: -3.78 }, "24": { lat: 42.59, lon: -5.57 },
+                "25": { lat: 41.61, lon: 0.62 },  "26": { lat: 42.46, lon: -2.44 }, "27": { lat: 43.01, lon: -7.55 }, "28": { lat: 40.41, lon: -3.70 },
+                "29": { lat: 36.72, lon: -4.42 }, "30": { lat: 37.99, lon: -1.13 }, "31": { lat: 42.81, lon: -1.64 }, "32": { lat: 42.33, lon: -7.86 },
+                "33": { lat: 43.36, lon: -5.84 }, "34": { lat: 42.01, lon: -4.52 }, "35": { lat: 28.12, lon: -15.43 },"36": { lat: 42.43, lon: -8.64 },
+                "37": { lat: 40.96, lon: -5.66 }, "38": { lat: 28.46, lon: -16.25 },"39": { lat: 43.46, lon: -3.80 }, "40": { lat: 40.94, lon: -4.11 },
+                "41": { lat: 37.38, lon: -5.98 }, "42": { lat: 41.76, lon: -2.46 }, "43": { lat: 41.11, lon: 1.24 },  "44": { lat: 40.34, lon: -1.10 },
+                "45": { lat: 39.86, lon: -4.02 }, "46": { lat: 39.46, lon: -0.37 }, "47": { lat: 41.65, lon: -4.72 }, "48": { lat: 43.26, lon: -2.93 },
+                "49": { lat: 41.50, lon: -5.74 }, "50": { lat: 41.65, lon: -0.88 }, "51": { lat: 35.88, lon: -5.31 }, "52": { lat: 35.29, lon: -2.93 }
+            };
+
+            function getDistanceKm(item) {
+                const loc = item.ubicacion || "";
+                const cpMatch = loc.match(/\b(0[1-9]|[1-4][0-9]|5[0-2])\d{3}\b/);
+                let prefix = null;
+                if (cpMatch) {
+                    prefix = cpMatch[1];
+                } else {
+                    const l = loc.toLowerCase();
+                    if (l.includes("vitoria") || l.includes("alava") || l.includes("álava") || l.includes("gasteiz")) prefix = "01";
+                    else if (l.includes("bilbao") || l.includes("bizkaia") || l.includes("vizcaya")) prefix = "48";
+                    else if (l.includes("san sebastian") || l.includes("donostia") || l.includes("gipuzkoa") || l.includes("guipuzcoa")) prefix = "20";
+                    else if (l.includes("logroño") || l.includes("rioja")) prefix = "26";
+                    else if (l.includes("pamplona") || l.includes("iruña") || l.includes("navarra")) prefix = "31";
+                    else if (l.includes("burgos")) prefix = "09";
+                    else if (l.includes("santander") || l.includes("cantabria")) prefix = "39";
+                    else if (l.includes("madrid")) prefix = "28";
+                    else if (l.includes("barcelona")) prefix = "08";
+                    else if (l.includes("valencia")) prefix = "46";
+                    else if (l.includes("sevilla")) prefix = "41";
+                    else if (l.includes("zaragoza")) prefix = "50";
+                }
+
+                if (!prefix || !provinceCoords[prefix]) return 9999;
+
+                const baseLat = 42.85, baseLon = -2.67; // Vitoria-Gasteiz (01005)
+                const target = provinceCoords[prefix];
+                const dLat = (target.lat - baseLat) * Math.PI / 180;
+                const dLon = (target.lon - baseLon) * Math.PI / 180;
+                const a = Math.sin(dLat / 2) * Math.sin(dLat / 2) +
+                          Math.cos(baseLat * Math.PI / 180) * Math.cos(target.lat * Math.PI / 180) *
+                          Math.sin(dLon / 2) * Math.sin(dLon / 2);
+                const c = 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1 - a));
+                return Math.round(6371 * c);
+            }
+
             // Ordenar
-            if (currentSort === 'price-asc') {
+            if (currentSort === 'dist-asc') {
+                filtered.sort((a, b) => getDistanceKm(a) - getDistanceKm(b));
+            } else if (currentSort === 'dist-desc') {
+                filtered.sort((a, b) => getDistanceKm(b) - getDistanceKm(a));
+            } else if (currentSort === 'price-asc') {
                 filtered.sort((a, b) => getCleanPrice(a) - getCleanPrice(b));
             } else if (currentSort === 'price-desc') {
                 filtered.sort((a, b) => getCleanPrice(b) - getCleanPrice(a));
@@ -1082,6 +1140,9 @@
                     imageHtml = `<div class="card-image-placeholder">Sin imagen de producto</div>`;
                 }
 
+                const distKm = getDistanceKm(item);
+                const distTag = distKm < 9000 ? ` <span style="color: var(--primary); font-weight: 600;">(~${distKm} km)</span>` : '';
+
                 card.innerHTML = `
                     ${actionsHtml}
                     ${imageHtml}
@@ -1092,7 +1153,7 @@
                                 <span class="card-price">${item.precio ? item.precio + '€' : 'N/D'}</span>
                             </div>
                             <div class="card-meta">
-                                <span>📍 ${item.ubicacion}</span>
+                                <span>📍 ${item.ubicacion}${distTag}</span>
                                 <span>📅 ${item.fecha_publicacion}</span>
                             </div>
                             <div class="card-badges">
